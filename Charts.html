@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo Cáo E-Commerce - Q1 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: {
+              bg: '#090A14',
+              card: '#111327',
+              border: '#1E2035',
+              muted: '#2A2D47',
+            },
+            primary: '#DF6B33',
+            primaryHover: '#C25A27',
+          },
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { background-color: #090A14; }
+    input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0px 1000px #2A2D47 inset !important;
+      -webkit-text-fill-color: #E2E8F0 !important;
+    }
+    .card-stat { transition: transform 0.2s; }
+    .card-stat:hover { transform: translateY(-2px); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1E2035; }
+    ::-webkit-scrollbar-thumb { background: #2A2D47; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #DF6B33; }
+  </style>
+</head>
+<body class="font-inter text-gray-200 min-h-screen">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 border-b border-dark-border bg-dark-bg/95 backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+          <i data-lucide="bar-chart-3" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h1 class="font-poppins font-bold text-lg text-white">E-Commerce Dashboard</h1>
+          <p class="text-xs text-gray-500">Báo cáo kinh doanh & Marketing</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <select id="periodSelect" class="bg-dark-muted border border-dark-border text-gray-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-primary">
+          <option value="q1">Q1 2026</option>
+          <option value="q4">Q4 2025</option>
+          <option value="q3">Q3 2025</option>
+        </select>
+        <button class="p-2 rounded-lg border border-dark-border hover:border-primary transition-colors">
+          <i data-lucide="download" class="w-5 h-5 text-gray-400"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- KPI Cards -->
+    <section id="kpiSection" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></section>
+
+    <!-- Revenue & Orders + Category -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 bg-dark-card border border-dark-border rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="font-poppins font-bold text-lg text-white">Doanh Thu & Đơn Hàng</h2>
+            <p class="text-sm text-gray-500 mt-1">Biến động doanh thu và số đơn hàng theo tháng</p>
+          </div>
+          <div class="flex gap-4 text-sm">
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-primary"></span> Doanh thu</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-400"></span> Đơn hàng</span>
+          </div>
+        </div>
+        <div class="relative" style="height:280px"><canvas id="revenueChart"></canvas></div>
+      </div>
+      <div class="bg-dark-card border border-dark-border rounded-2xl p-6">
+        <div class="mb-6">
+          <h2 class="font-poppins font-bold text-lg text-white">Phân Bổ Danh Mục</h2>
+          <p class="text-sm text-gray-500 mt-1">Tỷ trọng doanh thu theo danh mục sản phẩm</p>
+        </div>
+        <div class="relative" style="height:280px"><canvas id="categoryPieChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Marketing + Funnel + Customer Growth -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="bg-dark-card border border-dark-border rounded-2xl p-6">
+        <div class="mb-6">
+          <h2 class="font-poppins font-bold text-lg text-white">Kênh Marketing</h2>
+          <p class="text-sm text-gray-500 mt-1">Doanh thu theo từng kênh tiếp cận</p>
+        </div>
+        <div class="relative" style="height:260px"><canvas id="marketingChart"></canvas></div>
+      </div>
+      <div class="bg-dark-card border border-dark-border rounded-2xl p-6">
+        <div class="mb-6">
+          <h2 class="font-poppins font-bold text-lg text-white">Tỷ Lệ Chuyển Đổi</h2>
+          <p class="text-sm text-gray-500 mt-1">Từ lượt truy cập đến đơn hàng thành công</p>
+        </div>
+        <div class="relative" style="height:260px"><canvas id="funnelChart"></canvas></div>
+      </div>
+      <div class="bg-dark-card border border-dark-border rounded-2xl p-6">
+        <div class="mb-6">
+          <h2 class="font-poppins font-bold text-lg text-white">Tăng Trưởng Khách Hàng</h2>
+          <p class="text-sm text-gray-500 mt-1">Khách hàng mới vs quay lại theo tháng</p>
+        </div>
+        <div class="relative" style="height:260px"><canvas id="customerChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Top Products Table -->
+    <div class="bg-dark-card border border-dark-border rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="font-poppins font-bold text-lg text-white">Sản Phẩm Bán Chạy</h2>
+          <p class="text-sm text-gray-500 mt-1">Top 10 sản phẩm có doanh thu cao nhất</p>
+        </div>
+        <button class="px-3 py-1.5 text-xs rounded-lg border border-dark-border text-gray-400 hover:border-primary hover:text-primary transition-colors">Xuất Excel</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-dark-border text-gray-500 text-xs uppercase tracking-wider">
+              <th class="text-left py-3 px-4 font-medium">#</th>
+              <th class="text-left py-3 px-4 font-medium">Sản phẩm</th>
+              <th class="text-left py-3 px-4 font-medium">Danh mục</th>
+              <th class="text-right py-3 px-4 font-medium">Đã bán</th>
+              <th class="text-right py-3 px-4 font-medium">Doanh thu</th>
+              <th class="text-right py-3 px-4 font-medium">Tăng trưởng</th>
+              <th class="text-center py-3 px-4 font-medium">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody id="productsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Customer Metrics + Regional -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-dark-card border border-dark-border rounded-2xl p-6">
+        <div class="mb-6">
+          <h2 class="font-poppins font-bold text-lg text-white">Phân Tích Khách Hàng</h2>
+          <p class="text-sm text-gray-500 mt-1">CLV, tần suất mua, giá trị trung bình đơn hàng</p>
+        </div>
+        <div id="customerMetrics" class="space-y-4"></div>
+      </div>
+      <div class="bg-dark-card border border-dark-border rounded-2xl p-6">
+        <div class="mb-6">
+          <h2 class="font-poppins font-bold text-lg text-white">Doanh Thu Theo Vùng</h2>
+          <p class="text-sm text-gray-500 mt-1">Tỷ trọng doanh thu theo khu vực địa lý</p>
+        </div>
+        <div class="relative" style="height:280px"><canvas id="regionalChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Marketing ROI Table -->
+    <div class="bg-dark-card border border-dark-border rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="font-poppins font-bold text-lg text-white">ROI Marketing Theo Kênh</h2>
+          <p class="text-sm text-gray-500 mt-1">Chi phí, doanh thu và tỷ lệ hoàn vốn từng kênh quảng cáo</p>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-dark-border text-gray-500 text-xs uppercase tracking-wider">
+              <th class="text-left py-3 px-4 font-medium">Kênh</th>
+              <th class="text-right py-3 px-4 font-medium">Chi phí (VNĐ)</th>
+              <th class="text-right py-3 px-4 font-medium">Doanh thu (VNĐ)</th>
+              <th class="text-right py-3 px-4 font-medium">ROAS</th>
+              <th class="text-right py-3 px-4 font-medium">Đơn hàng</th>
+              <th class="text-right py-3 px-4 font-medium">CPA</th>
+              <th class="text-right py-3 px-4 font-medium">Phân loại</th>
+            </tr>
+          </thead>
+          <tbody id="marketingRoiTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Summary Footer -->
+    <div class="bg-gradient-to-r from-primary/10 to-orange-500/5 border border-primary/20 rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <i data-lucide="sparkles" class="w-5 h-5 text-primary"></i>
+        </div>
+        <div>
+          <h3 class="font-poppins font-bold text-white mb-1">Tổng Kết Q1 2026</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Tổng doanh thu quý đạt <span class="text-primary font-semibold">42.8 tỷ VNĐ</span>, tăng
+            <span class="text-green-400 font-semibold">28.5%</span> so với quý trước. Kênh Organic Search và Email Marketing
+            có ROI cao nhất lần lượt là 8.2x và 6.8x. Tỷ lệ chuyển đổi tổng thể đạt
+            <span class="text-primary font-semibold">3.2%</span>. Điện thoại thông minh và Laptop là hai danh mục dẫn đầu doanh thu.
+            Khuyến nghị: tăng đầu tư vào kênh Facebook Ads và phát triển chương trình khách hàng thân thiết.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-dark-border mt-8">
+    <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-gray-600">© 2026 E-Commerce Dashboard. Báo cáo được tạo tự động với dữ liệu mock.</p>
+      <div class="flex items-center gap-4 text-sm text-gray-600">
+        <span class="flex items-center gap-1"><i data-lucide="clock" class="w-4 h-4"></i> Cập nhật: 2026-04-21</span>
+        <span class="flex items-center gap-1"><i data-lucide="database" class="w-4 h-4"></i> Mock Data</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ============ MOCK DATA ============
+    const kpiData = [
+      { label: 'Tổng Doanh Thu', value: '42.8 Tỷ', change: '+28.5%', trend: 'up', icon: 'trending-up', color: 'primary' },
+      { label: 'Tổng Đơn Hàng', value: '186,420', change: '+19.2%', trend: 'up', icon: 'shopping-cart', color: 'blue' },
+      { label: 'Khách Hàng Mới', value: '34,580', change: '+42.1%', trend: 'up', icon: 'users', color: 'green' },
+      { label: 'Tỷ Lệ Chuyển Đổi', value: '3.2%', change: '-0.3%', trend: 'down', icon: 'percent', color: 'red' },
+    ];
+
+    const revenueData = {
+      labels: ['T1', 'T2', 'T3'],
+      revenue: [11.2, 12.8, 18.8],
+      orders: [42100, 48200, 96120],
+    };
+
+    const categoryData = {
+      labels: ['Điện thoại', 'Laptop', 'Tablet', 'Phụ kiện', 'Khác'],
+      values: [35, 28, 15, 12, 10],
+      colors: ['#DF6B33', '#3B82F6', '#10B981', '#8B5CF6', '#6B7280'],
+    };
+
+    const marketingData = {
+      labels: ['Google Ads', 'Facebook Ads', 'SEO / Organic', 'Email Marketing', 'Affiliate'],
+      revenue: [12.4, 10.2, 9.8, 5.6, 2.8],
+      spend: [2.8, 3.2, 1.2, 0.82, 0.45],
+      colors: ['#DF6B33', '#3B82F6', '#10B981', '#8B5CF6', '#F59E0B'],
+    };
+
+    const funnelData = {
+      labels: ['Lượt truy cập', 'Xem sản phẩm', 'Thêm vào giỏ', 'Thanh toán', 'Hoàn thành'],
+      values: [5820000, 2100000, 485000, 210000, 186420],
+      colors: ['#DF6B33', '#C25A27', '#3B82F6', '#10B981', '#8B5CF6'],
+    };
+
+    const customerGrowth = {
+      labels: ['T1', 'T2', 'T3'],
+      newCustomers: [9200, 10800, 14580],
+      returning: [14200, 15800, 18200],
+    };
+
+    const productsData = [
+      { rank: 1, name: 'iPhone 15 Pro Max 256GB', category: 'Điện thoại', sold: 8420, revenue: 36.8, growth: 45.2, status: 'Tăng mạnh' },
+      { rank: 2, name: 'MacBook Pro M3 14 inch', category: 'Laptop', sold: 3240, revenue: 29.2, growth: 28.4, status: 'Tăng' },
+      { rank: 3, name: 'Samsung Galaxy S24 Ultra', category: 'Điện thoại', sold: 6180, revenue: 27.0, growth: 52.1, status: 'Tăng mạnh' },
+      { rank: 4, name: 'iPad Pro 12.9" M4', category: 'Tablet', sold: 2850, revenue: 19.4, growth: 18.6, status: 'Ổn định' },
+      { rank: 5, name: 'AirPods Pro 2', category: 'Phụ kiện', sold: 12400, revenue: 17.4, growth: 31.2, status: 'Tăng' },
+      { rank: 6, name: 'Dell XPS 15 2026', category: 'Laptop', sold: 1920, revenue: 15.4, growth: -5.2, status: 'Giảm nhẹ' },
+      { rank: 7, name: 'Sony WH-1000XM5', category: 'Phụ kiện', sold: 5680, revenue: 12.5, growth: 22.8, status: 'Tăng' },
+      { rank: 8, name: 'Galaxy Tab S10 Ultra', category: 'Tablet', sold: 1680, revenue: 11.8, growth: 8.4, status: 'Ổn định' },
+      { rank: 9, name: 'Apple Watch Ultra 2', category: 'Phụ kiện', sold: 3420, revenue: 10.3, growth: 67.3, status: 'Tăng mạnh' },
+      { rank: 10, name: 'Logitech MX Master 3S', category: 'Phụ kiện', sold: 7840, revenue: 7.8, growth: 12.1, status: 'Tăng' },
+    ];
+
+    const customerMetrics = [
+      { label: 'Giá trị trung bình đơn hàng', value: '1,298,000', unit: 'VNĐ', icon: 'receipt', color: '#DF6B33' },
+      { label: 'Customer Lifetime Value', value: '8,420,000', unit: 'VNĐ', icon: 'crown', color: '#3B82F6' },
+      { label: 'Tần suất mua trung bình', value: '3.4', unit: 'lần/tháng', icon: 'repeat', color: '#10B981' },
+      { label: 'Tỷ lệ khách quay lại', value: '42%', unit: '', icon: 'arrow-right-left', color: '#8B5CF6' },
+    ];
+
+    const regionalData = {
+      labels: ['TP. Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Cần Thơ', 'Khánh Hòa', 'Khác'],
+      revenue: [14.8, 11.2, 5.6, 3.8, 2.4, 5.0],
+      colors: ['#DF6B33', '#C25A27', '#3B82F6', '#10B981', '#8B5CF6', '#6B7280'],
+    };
+
+    const marketingRoiData = [
+      { channel: 'Google Ads', cost: 2.8, revenue: 12.4, roas: 4.43, orders: 8420 },
+      { channel: 'Facebook Ads', cost: 3.2, revenue: 10.2, roas: 3.19, orders: 6840 },
+      { channel: 'SEO / Organic', cost: 1.2, revenue: 9.8, roas: 8.17, orders: 8920 },
+      { channel: 'Email Marketing', cost: 0.82, revenue: 5.6, roas: 6.83, orders: 3120 },
+      { channel: 'Affiliate Marketing', cost: 0.45, revenue: 2.8, roas: 6.22, orders: 1860 },
+    ];
+
+    // ============ CHART INSTANCES ============
+    const chartInstances = {};
+
+    // Common options
+    const gridColor = '#1E2035';
+    const tickColor = '#6B7280';
+
+    function chartDefaults() {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#111327',
+            borderColor: '#1E2035',
+            borderWidth: 1,
+            titleColor: '#E2E8F0',
+            bodyColor: '#9CA3AF',
+            padding: 12,
+            cornerRadius: 8,
+          },
+        },
+        scales: {
+          x: {
+            ticks: { color: tickColor, font: { size: 11 } },
+            grid: { color: gridColor },
+            border: { display: false },
+          },
+          y: {
+            ticks: { color: tickColor, font: { size: 11 } },
+            grid: { color: gridColor },
+            border: { display: false },
+          },
+        },
+      };
+    }
+
+    // ============ KPI CARDS ============
+    function renderKPIs() {
+      const container = document.getElementById('kpiSection');
+      const colorMap = { primary: '#DF6B33', blue: '#3B82F6', green: '#10B981', red: '#EF4444' };
+      container.innerHTML = kpiData.map(kpi => `
+        <div class="card-stat bg-dark-card border border-dark-border rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-gray-500 font-medium">${kpi.label}</span>
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background-color: ${colorMap[kpi.color]}20">
+              <i data-lucide="${kpi.icon}" class="w-4 h-4" style="color: ${colorMap[kpi.color]}"></i>
+            </div>
+          </div>
+          <p class="font-poppins font-bold text-2xl text-white">${kpi.value}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <i data-lucide="${kpi.trend === 'up' ? 'trending-up' : 'trending-down'}" class="w-3.5 h-3.5 ${kpi.trend === 'up' ? 'text-green-400' : 'text-red-400'}"></i>
+            <span class="text-xs ${kpi.trend === 'up' ? 'text-green-400' : 'text-red-400'}">${kpi.change}</span>
+            <span class="text-xs text-gray-600">so với Q4 2025</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ============ REVENUE CHART ============
+    function renderRevenueChart() {
+      const ctx = document.getElementById('revenueChart').getContext('2d');
+      if (chartInstances.revenue) chartInstances.revenue.destroy();
+
+      const gradRevenue = ctx.createLinearGradient(0, 0, 0, 280);
+      gradRevenue.addColorStop(0, 'rgba(223, 107, 51, 0.3)');
+      gradRevenue.addColorStop(1, 'rgba(223, 107, 51, 0)');
+
+      const gradOrders = ctx.createLinearGradient(0, 0, 0, 280);
+      gradOrders.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+      gradOrders.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+      chartInstances.revenue = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: revenueData.labels,
+          datasets: [
+            {
+              label: 'Doanh thu (Tỷ VNĐ)',
+              data: revenueData.revenue,
+              borderColor: '#DF6B33',
+              backgroundColor: gradRevenue,
+              borderWidth: 2.5,
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: '#DF6B33',
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              yAxisID: 'y',
+            },
+            {
+              label: 'Đơn hàng',
+              data: revenueData.orders,
+              borderColor: '#3B82F6',
+              backgroundColor: gradOrders,
+              borderWidth: 2,
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: '#3B82F6',
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              yAxisID: 'y1',
+            },
+          ],
+        },
+        options: {
+          ...chartDefaults(),
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            ...chartDefaults().plugins,
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'end',
+              labels: { color: '#9CA3AF', boxWidth: 12, boxHeight: 12, borderRadius: 6, useBorderRadius: true, font: { size: 12 } },
+            },
+            tooltip: {
+              ...chartDefaults().plugins.tooltip,
+              callbacks: {
+                label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}${ctx.datasetIndex === 0 ? ' Tỷ VNĐ' : ''}`,
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: { color: tickColor, font: { size: 12 } },
+              grid: { color: gridColor },
+              border: { display: false },
+            },
+            y: {
+              type: 'linear',
+              position: 'left',
+              ticks: { color: tickColor, font: { size: 11 }, callback: v => v + 'T' },
+              grid: { color: gridColor },
+              border: { display: false },
+            },
+            y1: {
+              type: 'linear',
+              position: 'right',
+              ticks: { color: tickColor, font: { size: 11 }, callback: v => (v / 1000).toFixed(0) + 'K' },
+              grid: { drawOnChartArea: false },
+              border: { display: false },
+            },
+          },
+        },
+      });
+    }
+
+    // ============ PIE CHART ============
+    function renderPieChart() {
+      const ctx = document.getElementById('categoryPieChart').getContext('2d');
+      if (chartInstances.category) chartInstances.category.destroy();
+
+      chartInstances.category = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: categoryData.labels,
+          datasets: [{
+            data: categoryData.values,
+            backgroundColor: categoryData.colors,
+            borderWidth: 0,
+            hoverOffset: 8,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '60%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: '#9CA3AF', padding: 16, boxWidth: 12, boxHeight: 12, borderRadius: 6, useBorderRadius: true, font: { size: 12 } },
+            },
+            tooltip: {
+              backgroundColor: '#111327',
+              borderColor: '#1E2035',
+              borderWidth: 1,
+              titleColor: '#E2E8F0',
+              bodyColor: '#9CA3AF',
+              padding: 12,
+              cornerRadius: 8,
+              callbacks: {
+                label: ctx => ` ${ctx.label}: ${ctx.parsed}%`,
+              },
+            },
+          },
+        },
+      });
+    }
+
+    // ============ MARKETING CHART ============
+    function renderMarketingChart() {
+      const ctx = document.getElementById('marketingChart').getContext('2d');
+      if (chartInstances.marketing) chartInstances.marketing.destroy();
+
+      chartInstances.marketing = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: marketingData.labels,
+          datasets: [{
+            label: 'Doanh thu (Tỷ VNĐ)',
+            data: marketingData.revenue,
+            backgroundColor: marketingData.colors,
+            borderRadius: 6,
+            borderSkipped: false,
+          }],
+        },
+        options: {
+          ...chartDefaults(),
+          indexAxis: 'y',
+          plugins: {
+            ...chartDefaults().plugins,
+            tooltip: {
+              ...chartDefaults().plugins.tooltip,
+              callbacks: {
+                title: ([ctx]) => marketingData.labels[ctx.dataIndex],
+                label: ctx => {
+                  const idx = ctx.dataIndex;
+                  return [` Doanh thu: ${ctx.parsed.x} Tỷ VNĐ`, ` Chi phí: ${marketingData.spend[idx]} Tỷ VNĐ`];
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: { color: tickColor, font: { size: 11 }, callback: v => v + 'T' },
+              grid: { color: gridColor },
+              border: { display: false },
+            },
+            y: {
+              ticks: { color: '#9CA3AF', font: { size: 11 } },
+              grid: { display: false },
+              border: { display: false },
+            },
+          },
+        },
+      });
+    }
+
+    // ============ FUNNEL CHART ============
+    function renderFunnelChart() {
+      const ctx = document.getElementById('funnelChart').getContext('2d');
+      if (chartInstances.funnel) chartInstances.funnel.destroy();
+
+      chartInstances.funnel = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: funnelData.labels,
+          datasets: [{
+            label: 'Người dùng',
+            data: funnelData.values,
+            backgroundColor: funnelData.colors,
+            borderRadius: 6,
+            borderSkipped: false,
+          }],
+        },
+        options: {
+          ...chartDefaults(),
+          plugins: {
+            ...chartDefaults().plugins,
+            tooltip: {
+              ...chartDefaults().plugins.tooltip,
+              callbacks: {
+                label: ctx => ` ${ctx.parsed.y.toLocaleString()} người`,
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: { color: tickColor, font: { size: 10 }, maxRotation: 30 },
+              grid: { display: false },
+              border: { display: false },
+            },
+            y: {
+              ticks: { color: tickColor, font: { size: 11 }, callback: v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'K' : v },
+              grid: { color: gridColor },
+              border: { display: false },
+            },
+          },
+        },
+      });
+    }
+
+    // ============ CUSTOMER GROWTH CHART ============
+    function renderCustomerChart() {
+      const ctx = document.getElementById('customerChart').getContext('2d');
+      if (chartInstances.customer) chartInstances.customer.destroy();
+
+      chartInstances.customer = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: customerGrowth.labels,
+          datasets: [
+            {
+              label: 'Khách mới',
+              data: customerGrowth.newCustomers,
+              backgroundColor: '#DF6B33',
+              borderRadius: 6,
+              borderSkipped: false,
+            },
+            {
+              label: 'Khách quay lại',
+              data: customerGrowth.returning,
+              backgroundColor: '#10B981',
+              borderRadius: 6,
+              borderSkipped: false,
+            },
+          ],
+        },
+        options: {
+          ...chartDefaults(),
+          plugins: {
+            ...chartDefaults().plugins,
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'end',
+              labels: { color: '#9CA3AF', boxWidth: 12, boxHeight: 12, borderRadius: 6, useBorderRadius: true, font: { size: 12 } },
+            },
+            tooltip: {
+              ...chartDefaults().plugins.tooltip,
+              callbacks: {
+                label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}`,
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: { color: tickColor, font: { size: 12 } },
+              grid: { display: false },
+              border: { display: false },
+            },
+            y: {
+              ticks: { color: tickColor, font: { size: 11 }, callback: v => (v/1000).toFixed(0)+'K' },
+              grid: { color: gridColor },
+              border: { display: false },
+            },
+          },
+        },
+      });
+    }
+
+    // ============ PRODUCTS TABLE ============
+    function renderProductsTable() {
+      const tbody = document.getElementById('productsTable');
+      tbody.innerHTML = productsData.map(p => {
+        const statusClass = p.status === 'Tăng mạnh' ? 'text-green-400 bg-green-400/10' : p.status === 'Tăng' ? 'text-blue-400 bg-blue-400/10' : p.status === 'Giảm nhẹ' ? 'text-red-400 bg-red-400/10' : 'text-gray-400 bg-gray-400/10';
+        const growthColor = p.growth > 0 ? 'text-green-400' : 'text-red-400';
+        return `
+          <tr class="border-b border-dark-border/50 hover:bg-dark-muted/30 transition-colors">
+            <td class="py-3 px-4 text-gray-500 font-medium">${p.rank}</td>
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-dark-muted flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="package" class="w-4 h-4 text-gray-400"></i>
+                </div>
+                <span class="text-white font-medium text-xs">${p.name}</span>
+              </div>
+            </td>
+            <td class="py-3 px-4 text-gray-400 text-xs">${p.category}</td>
+            <td class="py-3 px-4 text-right text-gray-300 font-medium">${p.sold.toLocaleString()}</td>
+            <td class="py-3 px-4 text-right text-primary font-poppins font-semibold">${p.revenue}T</td>
+            <td class="py-3 px-4 text-right font-medium ${growthColor}">${p.growth > 0 ? '+' : ''}${p.growth}%</td>
+            <td class="py-3 px-4 text-center"><span class="px-2 py-1 rounded-md text-xs font-medium ${statusClass}">${p.status}</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ============ CUSTOMER METRICS ============
+    function renderCustomerMetrics() {
+      const container = document.getElementById('customerMetrics');
+      container.innerHTML = customerMetrics.map(m => `
+        <div class="flex items-center gap-4 p-4 bg-dark-muted/30 rounded-xl border border-dark-border">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: ${m.color}20">
+            <i data-lucide="${m.icon}" class="w-5 h-5" style="color: ${m.color}"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs text-gray-500 truncate">${m.label}</p>
+            <p class="font-poppins font-bold text-lg text-white">${m.value}<span class="text-xs text-gray-500 font-normal ml-1">${m.unit}</span></p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ============ REGIONAL CHART ============
+    function renderRegionalChart() {
+      const ctx = document.getElementById('regionalChart').getContext('2d');
+      if (chartInstances.regional) chartInstances.regional.destroy();
+
+      chartInstances.regional = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: regionalData.labels,
+          datasets: [{
+            label: 'Doanh thu (Tỷ VNĐ)',
+            data: regionalData.revenue,
+            backgroundColor: regionalData.colors,
+            borderRadius: 6,
+            borderSkipped: false,
+          }],
+        },
+        options: {
+          ...chartDefaults(),
+          indexAxis: 'y',
+          plugins: {
+            ...chartDefaults().plugins,
+            tooltip: {
+              ...chartDefaults().plugins.tooltip,
+              callbacks: {
+                title: ([ctx]) => regionalData.labels[ctx.dataIndex],
+                label: ctx => ` Doanh thu: ${ctx.parsed.x} Tỷ VNĐ`,
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: { color: tickColor, font: { size: 11 }, callback: v => v + 'T' },
+              grid: { color: gridColor },
+              border: { display: false },
+            },
+            y: {
+              ticks: { color: '#9CA3AF', font: { size: 11 } },
+              grid: { display: false },
+              border: { display: false },
+            },
+          },
+        },
+      });
+    }
+
+    // ============ MARKETING ROI TABLE ============
+    function renderMarketingRoiTable() {
+      const tbody = document.getElementById('marketingRoiTable');
+      tbody.innerHTML = marketingRoiData.map(m => {
+        const roasColor = m.roas >= 5 ? 'text-green-400' : m.roas >= 3 ? 'text-blue-400' : 'text-red-400';
+        const barColor = m.roas >= 5 ? 'bg-green-400' : m.roas >= 3 ? 'bg-blue-400' : 'bg-red-400';
+        const roasWidth = Math.min((m.roas / 10) * 100, 100);
+        const tagClass = m.roas >= 5 ? 'text-green-400 bg-green-400/10' : m.roas >= 3 ? 'text-blue-400 bg-blue-400/10' : 'text-red-400 bg-red-400/10';
+        const tagText = m.roas >= 5 ? 'Cao' : m.roas >= 3 ? 'Trung bình' : 'Thấp';
+        const cpa = ((m.cost * 1e9) / m.orders / 1e6).toFixed(1);
+        return `
+          <tr class="border-b border-dark-border/50 hover:bg-dark-muted/30 transition-colors">
+            <td class="py-3 px-4 font-medium text-white">${m.channel}</td>
+            <td class="py-3 px-4 text-right text-gray-300">${m.cost.toFixed(2)} Tỷ</td>
+            <td class="py-3 px-4 text-right text-primary font-semibold">${m.revenue.toFixed(2)} Tỷ</td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <div class="w-16 h-1.5 bg-dark-muted rounded-full overflow-hidden">
+                  <div class="h-full rounded-full ${barColor}" style="width: ${roasWidth}%"></div>
+                </div>
+                <span class="font-semibold ${roasColor}">${m.roas}x</span>
+              </div>
+            </td>
+            <td class="py-3 px-4 text-right text-gray-300">${m.orders.toLocaleString()}</td>
+            <td class="py-3 px-4 text-right text-gray-300">${cpa} M</td>
+            <td class="py-3 px-4 text-right">
+              <span class="px-2 py-1 rounded-md text-xs font-semibold ${tagClass}">${tagText}</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ============ INIT ============
+    function init() {
+      renderKPIs();
+      renderRevenueChart();
+      renderPieChart();
+      renderMarketingChart();
+      renderFunnelChart();
+      renderCustomerChart();
+      renderProductsTable();
+      renderCustomerMetrics();
+      renderRegionalChart();
+      renderMarketingRoiTable();
+      lucide.createIcons();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
