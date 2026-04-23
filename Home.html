@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechVault - Premium Technology Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            dark: {
+              bg: '#090A14',
+              card: '#111327',
+              border: '#1E2035',
+              muted: '#2A2D47',
+            },
+            primary: '#DF6B33',
+            primaryHover: '#C25A27',
+          },
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { background-color: #090A14; }
+    .hero-gradient {
+      background: radial-gradient(ellipse at 50% 0%, rgba(223, 107, 51, 0.12) 0%, transparent 60%);
+    }
+    .grid-pattern {
+      background-image:
+        linear-gradient(rgba(30, 32, 53, 0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 32, 53, 0.4) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .product-card:hover .product-img {
+      transform: scale(1.05);
+    }
+    .product-card:hover {
+      border-color: rgba(223, 107, 51, 0.5);
+    }
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #DF6B33;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .glow-btn {
+      box-shadow: 0 0 20px rgba(223, 107, 51, 0.2);
+    }
+    .glow-btn:hover {
+      box-shadow: 0 0 30px rgba(223, 107, 51, 0.35);
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .float-anim {
+      animation: float 3s ease-in-out infinite;
+    }
+    .category-card:hover .category-icon-wrap {
+      transform: scale(1.1);
+    }
+    .category-card:hover .category-arrow {
+      transform: translateX(4px);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1E2035; }
+    ::-webkit-scrollbar-thumb { background: #2A2D47; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #DF6B33; }
+  </style>
+</head>
+<body class="font-inter text-slate-200 min-h-screen">
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="sticky top-0 z-50 border-b border-dark-border bg-dark-bg/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Logo -->
+        <a href="Home.html" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
+            <i data-lucide="cpu" class="w-5 h-5 text-white"></i>
+          </div>
+          <span class="font-poppins font-bold text-xl text-white">TechVault</span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="#about" class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors">About</a>
+          <a href="#products" class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors">Products</a>
+          <a href="Charts.html" class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors">Report</a>
+          <a href="#contact" class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors">Contact</a>
+        </nav>
+
+        <!-- Auth Buttons -->
+        <div class="hidden md:flex items-center gap-3">
+          <a href="login.html" class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white border border-dark-border hover:border-slate-500 rounded-xl transition-all duration-200">
+            Sign In
+          </a>
+          <a href="register.html" class="px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primaryHover rounded-xl transition-all duration-200 glow-btn">
+            Sign Up
+          </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg border border-dark-border hover:border-slate-500 transition-colors">
+          <i data-lucide="menu" class="w-5 h-5 text-slate-300" id="menuIcon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-dark-border bg-dark-card/95 backdrop-blur-md">
+      <nav class="flex flex-col px-4 py-4 gap-1">
+        <a href="#about" class="px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-muted/50 rounded-xl transition-colors">About</a>
+        <a href="#products" class="px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-muted/50 rounded-xl transition-colors">Products</a>
+        <a href="Charts.html" class="px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-muted/50 rounded-xl transition-colors">Report</a>
+        <a href="#contact" class="px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-muted/50 rounded-xl transition-colors">Contact</a>
+        <div class="flex gap-3 mt-3 pt-3 border-t border-dark-border">
+          <a href="login.html" class="flex-1 px-4 py-2.5 text-sm font-medium text-slate-300 border border-dark-border rounded-xl text-center hover:border-slate-500 transition-colors">Sign In</a>
+          <a href="register.html" class="flex-1 px-4 py-2.5 text-sm font-bold text-white bg-primary hover:bg-primaryHover rounded-xl text-center transition-colors">Sign Up</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ HERO SECTION ============ -->
+  <section class="relative overflow-hidden">
+    <!-- Background Effects -->
+    <div class="absolute inset-0 grid-pattern"></div>
+    <div class="absolute inset-0 hero-gradient"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 lg:py-36">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+        <!-- Left: Text Content -->
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            <span class="text-xs font-medium text-primary">New Collection 2026</span>
+          </div>
+
+          <h1 class="font-poppins font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-6">
+            Discover the Future of
+            <span class="text-primary"> Technology</span>
+          </h1>
+
+          <p class="text-slate-400 text-base sm:text-lg leading-relaxed mb-8 max-w-lg">
+            Explore premium smartphones, laptops, tablets, and accessories from the world's leading brands. Experience innovation at your fingertips.
+          </p>
+
+          <div class="flex flex-wrap gap-4">
+            <a href="#products" class="inline-flex items-center gap-2 px-7 py-3.5 bg-primary hover:bg-primaryHover text-white font-poppins font-bold rounded-xl transition-all duration-200 glow-btn">
+              <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+              Shop Now
+            </a>
+            <a href="Charts.html" class="inline-flex items-center gap-2 px-7 py-3.5 border border-dark-border hover:border-slate-500 text-slate-300 hover:text-white font-medium rounded-xl transition-all duration-200">
+              <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+              View Report
+            </a>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="flex flex-wrap items-center gap-6 mt-10 pt-8 border-t border-dark-border">
+            <div class="flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-4 h-4 text-primary"></i>
+              <span class="text-xs text-slate-500">Secure Payment</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="truck" class="w-4 h-4 text-primary"></i>
+              <span class="text-xs text-slate-500">Free Shipping</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="refresh-cw" class="w-4 h-4 text-primary"></i>
+              <span class="text-xs text-slate-500">30-Day Returns</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Hero Visual -->
+        <div class="hidden lg:flex justify-center items-center relative">
+          <div class="absolute w-80 h-80 rounded-full bg-primary/5 blur-3xl"></div>
+          <div class="relative float-anim">
+            <!-- Product showcase card -->
+            <div class="bg-dark-card border border-dark-border rounded-2xl p-6 shadow-2xl shadow-black/50 w-80">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-lg">New Arrival</span>
+                <div class="flex items-center gap-1 text-yellow-400">
+                  <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+                  <span class="text-xs font-semibold">4.9</span>
+                </div>
+              </div>
+              <div class="w-full h-48 bg-dark-muted/50 rounded-xl flex items-center justify-center mb-4">
+                <i data-lucide="smartphone" class="w-20 h-20 text-primary/60"></i>
+              </div>
+              <h3 class="font-poppins font-bold text-white mb-1">iPhone 15 Pro Max</h3>
+              <p class="text-xs text-slate-500 mb-3">256GB Natural Titanium</p>
+              <div class="flex items-center justify-between">
+                <span class="font-poppins font-bold text-lg text-primary">$1,199</span>
+                <button class="p-2 rounded-lg bg-primary hover:bg-primaryHover text-white transition-colors">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CATEGORIES ============ -->
+  <section id="products" class="py-16 sm:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <h2 class="font-poppins font-bold text-2xl sm:text-3xl text-white mb-2">Browse Categories</h2>
+          <p class="text-slate-500 text-sm">Find exactly what you are looking for</p>
+        </div>
+        <a href="#" class="hidden sm:inline-flex items-center gap-1 text-sm text-primary hover:text-primaryHover transition-colors font-medium">
+          View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <!-- Category: Smartphones -->
+        <a href="#" class="category-card group bg-dark-card border border-dark-border rounded-2xl p-5 text-center hover:border-primary/40 transition-all duration-200 cursor-pointer">
+          <div class="category-icon-wrap w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3 transition-transform duration-200">
+            <i data-lucide="smartphone" class="w-7 h-7 text-primary"></i>
+          </div>
+          <h3 class="font-poppins font-bold text-sm text-white mb-1">Smartphones</h3>
+          <div class="flex items-center justify-center gap-1 text-slate-500">
+            <span class="text-xs">1,240 items</span>
+            <i data-lucide="arrow-right" class="w-3 h-3 category-arrow transition-transform duration-200"></i>
+          </div>
+        </a>
+
+        <!-- Category: Laptops -->
+        <a href="#" class="category-card group bg-dark-card border border-dark-border rounded-2xl p-5 text-center hover:border-primary/40 transition-all duration-200 cursor-pointer">
+          <div class="category-icon-wrap w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mx-auto mb-3 transition-transform duration-200">
+            <i data-lucide="laptop" class="w-7 h-7 text-blue-400"></i>
+          </div>
+          <h3 class="font-poppins font-bold text-sm text-white mb-1">Laptops</h3>
+          <div class="flex items-center justify-center gap-1 text-slate-500">
+            <span class="text-xs">862 items</span>
+            <i data-lucide="arrow-right" class="w-3 h-3 category-arrow transition-transform duration-200"></i>
+          </div>
+        </a>
+
+        <!-- Category: Tablets -->
+        <a href="#" class="category-card group bg-dark-card border border-dark-border rounded-2xl p-5 text-center hover:border-primary/40 transition-all duration-200 cursor-pointer">
+          <div class="category-icon-wrap w-14 h-14 rounded-xl bg-green-500/10 flex items-center justify-center mx-auto mb-3 transition-transform duration-200">
+            <i data-lucide="tablet" class="w-7 h-7 text-green-400"></i>
+          </div>
+          <h3 class="font-poppins font-bold text-sm text-white mb-1">Tablets</h3>
+          <div class="flex items-center justify-center gap-1 text-slate-500">
+            <span class="text-xs">548 items</span>
+            <i data-lucide="arrow-right" class="w-3 h-3 category-arrow transition-transform duration-200"></i>
+          </div>
+        </a>
+
+        <!-- Category: Audio -->
+        <a href="#" class="category-card group bg-dark-card border border-dark-border rounded-2xl p-5 text-center hover:border-primary/40 transition-all duration-200 cursor-pointer">
+          <div class="category-icon-wrap w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center mx-auto mb-3 transition-transform duration-200">
+            <i data-lucide="headphones" class="w-7 h-7 text-purple-400"></i>
+          </div>
+          <h3 class="font-poppins font-bold text-sm text-white mb-1">Audio</h3>
+          <div class="flex items-center justify-center gap-1 text-slate-500">
+            <span class="text-xs">1,120 items</span>
+            <i data-lucide="arrow-right" class="w-3 h-3 category-arrow transition-transform duration-200"></i>
+          </div>
+        </a>
+
+        <!-- Category: Wearables -->
+        <a href="#" class="category-card group bg-dark-card border border-dark-border rounded-2xl p-5 text-center hover:border-primary/40 transition-all duration-200 cursor-pointer">
+          <div class="category-icon-wrap w-14 h-14 rounded-xl bg-orange-400/10 flex items-center justify-center mx-auto mb-3 transition-transform duration-200">
+            <i data-lucide="watch" class="w-7 h-7 text-orange-400"></i>
+          </div>
+          <h3 class="font-poppins font-bold text-sm text-white mb-1">Wearables</h3>
+          <div class="flex items-center justify-center gap-1 text-slate-500">
+            <span class="text-xs">634 items</span>
+            <i data-lucide="arrow-right" class="w-3 h-3 category-arrow transition-transform duration-200"></i>
+          </div>
+        </a>
+
+        <!-- Category: Accessories -->
+        <a href="#" class="category-card group bg-dark-card border border-dark-border rounded-2xl p-5 text-center hover:border-primary/40 transition-all duration-200 cursor-pointer">
+          <div class="category-icon-wrap w-14 h-14 rounded-xl bg-cyan-400/10 flex items-center justify-center mx-auto mb-3 transition-transform duration-200">
+            <i data-lucide="cable" class="w-7 h-7 text-cyan-400"></i>
+          </div>
+          <h3 class="font-poppins font-bold text-sm text-white mb-1">Accessories</h3>
+          <div class="flex items-center justify-center gap-1 text-slate-500">
+            <span class="text-xs">2,180 items</span>
+            <i data-lucide="arrow-right" class="w-3 h-3 category-arrow transition-transform duration-200"></i>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURED PRODUCTS ============ -->
+  <section class="py-16 sm:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <h2 class="font-poppins font-bold text-2xl sm:text-3xl text-white mb-2">Featured Products</h2>
+          <p class="text-slate-500 text-sm">Handpicked deals just for you</p>
+        </div>
+        <a href="#" class="hidden sm:inline-flex items-center gap-1 text-sm text-primary hover:text-primaryHover transition-colors font-medium">
+          View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+        <!-- Product 1 -->
+        <div class="product-card bg-dark-card border border-dark-border rounded-2xl p-5 transition-all duration-200 hover:shadow-lg hover:shadow-black/30 cursor-pointer group">
+          <div class="relative mb-4">
+            <div class="w-full aspect-square bg-dark-muted/40 rounded-xl flex items-center justify-center overflow-hidden">
+              <i data-lucide="smartphone" class="w-16 h-16 text-slate-600 product-img transition-transform duration-300"></i>
+            </div>
+            <span class="absolute top-3 left-3 text-xs font-semibold text-white bg-primary px-2.5 py-1 rounded-lg">-15%</span>
+            <button class="absolute top-3 right-3 w-8 h-8 rounded-lg bg-dark-card/80 backdrop-blur-sm border border-dark-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:border-primary/50">
+              <i data-lucide="heart" class="w-4 h-4 text-slate-400 hover:text-primary transition-colors"></i>
+            </button>
+          </div>
+          <div class="flex items-center gap-1 mb-2">
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <span class="text-xs text-slate-500 ml-1">(842)</span>
+          </div>
+          <h3 class="font-poppins font-bold text-sm text-white mb-1 leading-tight">iPhone 15 Pro Max 256GB</h3>
+          <p class="text-xs text-slate-500 mb-3">Apple</p>
+          <div class="flex items-center justify-between">
+            <div class="flex items-baseline gap-2">
+              <span class="font-poppins font-bold text-lg text-primary">$1,199</span>
+              <span class="text-xs text-slate-500 line-through">$1,399</span>
+            </div>
+            <button class="p-2 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all duration-200">
+              <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card bg-dark-card border border-dark-border rounded-2xl p-5 transition-all duration-200 hover:shadow-lg hover:shadow-black/30 cursor-pointer group">
+          <div class="relative mb-4">
+            <div class="w-full aspect-square bg-dark-muted/40 rounded-xl flex items-center justify-center overflow-hidden">
+              <i data-lucide="laptop" class="w-16 h-16 text-slate-600 product-img transition-transform duration-300"></i>
+            </div>
+            <span class="absolute top-3 left-3 text-xs font-semibold text-white bg-blue-500 px-2.5 py-1 rounded-lg">New</span>
+            <button class="absolute top-3 right-3 w-8 h-8 rounded-lg bg-dark-card/80 backdrop-blur-sm border border-dark-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:border-primary/50">
+              <i data-lucide="heart" class="w-4 h-4 text-slate-400 hover:text-primary transition-colors"></i>
+            </button>
+          </div>
+          <div class="flex items-center gap-1 mb-2">
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-slate-600"></i>
+            <span class="text-xs text-slate-500 ml-1">(324)</span>
+          </div>
+          <h3 class="font-poppins font-bold text-sm text-white mb-1 leading-tight">MacBook Pro M3 14"</h3>
+          <p class="text-xs text-slate-500 mb-3">Apple</p>
+          <div class="flex items-center justify-between">
+            <div class="flex items-baseline gap-2">
+              <span class="font-poppins font-bold text-lg text-primary">$1,999</span>
+            </div>
+            <button class="p-2 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all duration-200">
+              <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product-card bg-dark-card border border-dark-border rounded-2xl p-5 transition-all duration-200 hover:shadow-lg hover:shadow-black/30 cursor-pointer group">
+          <div class="relative mb-4">
+            <div class="w-full aspect-square bg-dark-muted/40 rounded-xl flex items-center justify-center overflow-hidden">
+              <i data-lucide="headphones" class="w-16 h-16 text-slate-600 product-img transition-transform duration-300"></i>
+            </div>
+            <span class="absolute top-3 left-3 text-xs font-semibold text-white bg-green-500 px-2.5 py-1 rounded-lg">Hot</span>
+            <button class="absolute top-3 right-3 w-8 h-8 rounded-lg bg-dark-card/80 backdrop-blur-sm border border-dark-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:border-primary/50">
+              <i data-lucide="heart" class="w-4 h-4 text-slate-400 hover:text-primary transition-colors"></i>
+            </button>
+          </div>
+          <div class="flex items-center gap-1 mb-2">
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <span class="text-xs text-slate-500 ml-1">(1,240)</span>
+          </div>
+          <h3 class="font-poppins font-bold text-sm text-white mb-1 leading-tight">Sony WH-1000XM5</h3>
+          <p class="text-xs text-slate-500 mb-3">Sony</p>
+          <div class="flex items-center justify-between">
+            <div class="flex items-baseline gap-2">
+              <span class="font-poppins font-bold text-lg text-primary">$348</span>
+              <span class="text-xs text-slate-500 line-through">$399</span>
+            </div>
+            <button class="p-2 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all duration-200">
+              <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Product 4 -->
+        <div class="product-card bg-dark-card border border-dark-border rounded-2xl p-5 transition-all duration-200 hover:shadow-lg hover:shadow-black/30 cursor-pointer group">
+          <div class="relative mb-4">
+            <div class="w-full aspect-square bg-dark-muted/40 rounded-xl flex items-center justify-center overflow-hidden">
+              <i data-lucide="watch" class="w-16 h-16 text-slate-600 product-img transition-transform duration-300"></i>
+            </div>
+            <span class="absolute top-3 left-3 text-xs font-semibold text-white bg-primary px-2.5 py-1 rounded-lg">-20%</span>
+            <button class="absolute top-3 right-3 w-8 h-8 rounded-lg bg-dark-card/80 backdrop-blur-sm border border-dark-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:border-primary/50">
+              <i data-lucide="heart" class="w-4 h-4 text-slate-400 hover:text-primary transition-colors"></i>
+            </button>
+          </div>
+          <div class="flex items-center gap-1 mb-2">
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-yellow-400 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-slate-600"></i>
+            <span class="text-xs text-slate-500 ml-1">(568)</span>
+          </div>
+          <h3 class="font-poppins font-bold text-sm text-white mb-1 leading-tight">Apple Watch Ultra 2</h3>
+          <p class="text-xs text-slate-500 mb-3">Apple</p>
+          <div class="flex items-center justify-between">
+            <div class="flex items-baseline gap-2">
+              <span class="font-poppins font-bold text-lg text-primary">$729</span>
+              <span class="text-xs text-slate-500 line-through">$899</span>
+            </div>
+            <button class="p-2 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all duration-200">
+              <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STATS SECTION ============ -->
+  <section class="py-16 sm:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-dark-card border border-dark-border rounded-2xl p-8 sm:p-12">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-4">
+              <i data-lucide="package" class="w-6 h-6 text-primary"></i>
+            </div>
+            <p class="font-poppins font-extrabold text-3xl text-white mb-1">6,500+</p>
+            <p class="text-sm text-slate-500">Products Available</p>
+          </div>
+          <div class="text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10 mb-4">
+              <i data-lucide="users" class="w-6 h-6 text-blue-400"></i>
+            </div>
+            <p class="font-poppins font-extrabold text-3xl text-white mb-1">120K+</p>
+            <p class="text-sm text-slate-500">Happy Customers</p>
+          </div>
+          <div class="text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-green-500/10 mb-4">
+              <i data-lucide="store" class="w-6 h-6 text-green-400"></i>
+            </div>
+            <p class="font-poppins font-extrabold text-3xl text-white mb-1">50+</p>
+            <p class="text-sm text-slate-500">Brand Partners</p>
+          </div>
+          <div class="text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10 mb-4">
+              <i data-lucide="zap" class="w-6 h-6 text-purple-400"></i>
+            </div>
+            <p class="font-poppins font-extrabold text-3xl text-white mb-1">24/7</p>
+            <p class="text-sm text-slate-500">Customer Support</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT SECTION ============ -->
+  <section id="about" class="py-16 sm:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-dark-border bg-dark-card mb-6">
+            <i data-lucide="info" class="w-3.5 h-3.5 text-primary"></i>
+            <span class="text-xs font-medium text-slate-400">About Us</span>
+          </div>
+          <h2 class="font-poppins font-bold text-3xl sm:text-4xl text-white mb-6 leading-tight">
+            Your Trusted Tech Partner Since 2020
+          </h2>
+          <p class="text-slate-400 leading-relaxed mb-6">
+            At TechVault, we are passionate about bringing the latest and greatest technology to your doorstep. With years of experience in the tech retail industry, we have built a reputation for quality, reliability, and exceptional customer service.
+          </p>
+          <p class="text-slate-400 leading-relaxed mb-8">
+            Our team of experts carefully curates every product in our catalog, ensuring that you receive only authentic, high-quality items backed by comprehensive warranties and dedicated after-sales support.
+          </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="badge-check" class="w-4 h-4 text-primary"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-sm text-white mb-0.5">100% Authentic</h4>
+                <p class="text-xs text-slate-500">All products are genuine</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="wrench" class="w-4 h-4 text-primary"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-sm text-white mb-0.5">Warranty</h4>
+                <p class="text-xs text-slate-500">Up to 24 months cover</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="headset" class="w-4 h-4 text-primary"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-sm text-white mb-0.5">Expert Support</h4>
+                <p class="text-xs text-slate-500">Technical assistance 24/7</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="tag" class="w-4 h-4 text-primary"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-sm text-white mb-0.5">Best Prices</h4>
+                <p class="text-xs text-slate-500">Competitive market rates</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="bg-dark-card border border-dark-border rounded-2xl p-8">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-dark-muted/30 rounded-xl p-5 border border-dark-border text-center">
+                <i data-lucide="award" class="w-8 h-8 text-primary mx-auto mb-2"></i>
+                <p class="font-poppins font-bold text-white mb-0.5">6+ Years</p>
+                <p class="text-xs text-slate-500">Industry Experience</p>
+              </div>
+              <div class="bg-dark-muted/30 rounded-xl p-5 border border-dark-border text-center">
+                <i data-lucide="globe" class="w-8 h-8 text-blue-400 mx-auto mb-2"></i>
+                <p class="font-poppins font-bold text-white mb-0.5">30+</p>
+                <p class="text-xs text-slate-500">Countries Served</p>
+              </div>
+              <div class="bg-dark-muted/30 rounded-xl p-5 border border-dark-border text-center">
+                <i data-lucide="star" class="w-8 h-8 text-yellow-400 mx-auto mb-2"></i>
+                <p class="font-poppins font-bold text-white mb-0.5">4.9/5</p>
+                <p class="text-xs text-slate-500">Customer Rating</p>
+              </div>
+              <div class="bg-dark-muted/30 rounded-xl p-5 border border-dark-border text-center">
+                <i data-lucide="repeat" class="w-8 h-8 text-green-400 mx-auto mb-2"></i>
+                <p class="font-poppins font-bold text-white mb-0.5">98%</p>
+                <p class="text-xs text-slate-500">Return Rate</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NEWSLETTER ============ -->
+  <section class="py-16 sm:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-gradient-to-r from-primary/10 to-orange-500/5 border border-primary/20 rounded-2xl p-8 sm:p-12">
+        <div class="max-w-2xl mx-auto text-center">
+          <div class="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="mail" class="w-7 h-7 text-primary"></i>
+          </div>
+          <h2 class="font-poppins font-bold text-2xl sm:text-3xl text-white mb-3">Stay in the Loop</h2>
+          <p class="text-slate-400 text-sm mb-8">Subscribe to our newsletter for exclusive deals, new arrivals, and tech news delivered to your inbox.</p>
+          <form class="flex flex-col sm:flex-row gap-3" onsubmit="event.preventDefault(); handleSubscribe();">
+            <input
+              type="email"
+              id="newsletterEmail"
+              placeholder="Enter your email address"
+              class="flex-1 bg-dark-muted/50 border border-dark-border rounded-xl py-3 px-4 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/40 transition-all duration-200"
+              required
+            >
+            <button
+              type="submit"
+              class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-poppins font-bold rounded-xl transition-all duration-200 glow-btn whitespace-nowrap"
+            >
+              Subscribe
+            </button>
+          </form>
+          <p id="subscribeMsg" class="hidden mt-3 text-sm text-green-400">Thanks for subscribing! Check your inbox soon.</p>
+          <p class="text-xs text-slate-600 mt-3">No spam, unsubscribe anytime.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT SECTION ============ -->
+  <section id="contact" class="py-16 sm:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="font-poppins font-bold text-3xl sm:text-4xl text-white mb-3">Get in Touch</h2>
+        <p class="text-slate-500 text-sm">Have questions? We are here to help.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Email -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 text-center hover:border-primary/40 transition-all duration-200 group">
+          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
+            <i data-lucide="mail" class="w-5 h-5 text-primary"></i>
+          </div>
+          <h4 class="font-poppins font-bold text-white mb-1">Email</h4>
+          <p class="text-sm text-slate-400">support@techvault.com</p>
+        </div>
+        <!-- Phone -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 text-center hover:border-primary/40 transition-all duration-200 group">
+          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
+            <i data-lucide="phone" class="w-5 h-5 text-primary"></i>
+          </div>
+          <h4 class="font-poppins font-bold text-white mb-1">Phone</h4>
+          <p class="text-sm text-slate-400">+1 (800) TECH-VAULT</p>
+        </div>
+        <!-- Location -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 text-center hover:border-primary/40 transition-all duration-200 group">
+          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
+            <i data-lucide="map-pin" class="w-5 h-5 text-primary"></i>
+          </div>
+          <h4 class="font-poppins font-bold text-white mb-1">Location</h4>
+          <p class="text-sm text-slate-400">Silicon Valley, CA</p>
+        </div>
+        <!-- Hours -->
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 text-center hover:border-primary/40 transition-all duration-200 group">
+          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
+            <i data-lucide="clock" class="w-5 h-5 text-primary"></i>
+          </div>
+          <h4 class="font-poppins font-bold text-white mb-1">Working Hours</h4>
+          <p class="text-sm text-slate-400">Mon-Sat: 9AM - 9PM</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-dark-border mt-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+        <!-- Brand -->
+        <div class="col-span-2 md:col-span-1">
+          <a href="Home.html" class="flex items-center gap-3 mb-4">
+            <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
+              <i data-lucide="cpu" class="w-4 h-4 text-white"></i>
+            </div>
+            <span class="font-poppins font-bold text-lg text-white">TechVault</span>
+          </a>
+          <p class="text-xs text-slate-500 leading-relaxed">Your one-stop destination for premium technology products. Quality guaranteed.</p>
+        </div>
+        <!-- Quick Links -->
+        <div>
+          <h4 class="font-poppins font-bold text-sm text-white mb-4">Quick Links</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#about" class="text-xs text-slate-500 hover:text-primary transition-colors">About Us</a></li>
+            <li><a href="#products" class="text-xs text-slate-500 hover:text-primary transition-colors">Products</a></li>
+            <li><a href="Charts.html" class="text-xs text-slate-500 hover:text-primary transition-colors">Report</a></li>
+            <li><a href="#contact" class="text-xs text-slate-500 hover:text-primary transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <!-- Account -->
+        <div>
+          <h4 class="font-poppins font-bold text-sm text-white mb-4">Account</h4>
+          <ul class="space-y-2.5">
+            <li><a href="login.html" class="text-xs text-slate-500 hover:text-primary transition-colors">Sign In</a></li>
+            <li><a href="register.html" class="text-xs text-slate-500 hover:text-primary transition-colors">Sign Up</a></li>
+            <li><a href="#" class="text-xs text-slate-500 hover:text-primary transition-colors">My Cart</a></li>
+            <li><a href="#" class="text-xs text-slate-500 hover:text-primary transition-colors">Wishlist</a></li>
+          </ul>
+        </div>
+        <!-- Social -->
+        <div>
+          <h4 class="font-poppins font-bold text-sm text-white mb-4">Follow Us</h4>
+          <div class="flex gap-3">
+            <a href="#" class="w-9 h-9 rounded-lg bg-dark-muted/50 border border-dark-border flex items-center justify-center hover:border-slate-500 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor"><path d="M22.46 6c-.85.38-1.78.64-2.75.76 1-.6 1.76-1.55 2.12-2.68-.93.55-1.96.95-3.06 1.17-.88-.94-2.13-1.53-3.51-1.53-2.66 0-4.81 2.16-4.81 4.81 0 .38.04.75.13 1.1-4-.2-7.58-2.11-9.96-5.02-.42.72-.66 1.56-.66 2.46 0 1.68.85 3.16 2.14 4.02-.79-.02-1.53-.24-2.18-.6v.06c0 2.35 1.67 4.31 3.88 4.76-.4.1-.83.16-1.27.16-.31 0-.62-.03-.92-.08.63 1.96 2.45 3.39 4.61 3.43-1.69 1.32-3.83 2.1-6.15 2.1-.4 0-.8-.02-1.19-.07 2.19 1.4 4.78 2.22 7.57 2.22 9.07 0 14.02-7.52 14.02-14.02 0-.21 0-.42-.01-.63.96-.69 1.79-1.56 2.45-2.55z"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-dark-muted/50 border border-dark-border flex items-center justify-center hover:border-slate-500 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-dark-muted/50 border border-dark-border flex items-center justify-center hover:border-slate-500 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-dark-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="text-xs text-slate-600">&copy; 2026 TechVault. All rights reserved.</p>
+        <div class="flex items-center gap-4 text-xs text-slate-600">
+          <a href="#" class="hover:text-slate-400 transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-slate-400 transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuIcon = document.getElementById('menuIcon');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      menuIcon.setAttribute('data-lucide', isOpen ? 'menu' : 'x');
+      lucide.createIcons();
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        menuIcon.setAttribute('data-lucide', 'menu');
+        lucide.createIcons();
+      });
+    });
+
+    // Newsletter subscribe
+    function handleSubscribe() {
+      const emailInput = document.getElementById('newsletterEmail');
+      const msg = document.getElementById('subscribeMsg');
+      if (emailInput.value.trim()) {
+        msg.classList.remove('hidden');
+        emailInput.value = '';
+        setTimeout(() => msg.classList.add('hidden'), 4000);
+      }
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
