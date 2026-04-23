@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - TechVault</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            dark: {
+              bg: '#090A14',
+              card: '#111327',
+              border: '#1E2035',
+              muted: '#2A2D47',
+            },
+            primary: '#DF6B33',
+            primaryHover: '#C25A27',
+          },
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { background-color: #090A14; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1E2035; }
+    ::-webkit-scrollbar-thumb { background: #2A2D47; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #DF6B33; }
+    .product-card:hover .product-img-wrap { transform: scale(1.05); }
+    .product-card:hover { border-color: rgba(223, 107, 51, 0.4); }
+    .filter-section summary::-webkit-details-marker { display: none; }
+    .filter-section details[open] summary .filter-chevron { transform: rotate(180deg); }
+    .filter-chevron { transition: transform 0.2s; }
+    .range-track { background: linear-gradient(to right, #DF6B33 var(--fill), #1E2035 var(--fill)); }
+    .pagination-btn.active { background-color: #DF6B33; color: white; border-color: #DF6B33; }
+    .filter-radio:checked + div { background-color: #DF6B33; border-color: #DF6B33; }
+    .filter-radio:checked + div .check-icon { display: flex; }
+    .filter-radio:checked ~ span { color: #DF6B33 !important; font-weight: 600; }
+    .price-preset.active { background-color: #DF6B33; border-color: #DF6B33; color: white; }
+    .nav-link { position: relative; }
+    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #DF6B33; transition: width 0.3s ease; }
+    .nav-link:hover::after { width: 100%; }
+    .glow-btn { box-shadow: 0 0 20px rgba(223, 107, 51, 0.2); }
+    .glow-btn:hover { box-shadow: 0 0 30px rgba(223, 107, 51, 0.35); }
+  </style>
+</head>
+<body class="font-inter text-slate-200 min-h-screen flex flex-col">
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="sticky top-0 z-50 border-b border-dark-border bg-dark-bg/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="Home.html" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
+            <i data-lucide="cpu" class="w-5 h-5 text-white"></i>
+          </div>
+          <span class="font-poppins font-bold text-xl text-white">TechVault</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="Home.html" class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors">Home</a>
+          <a href="Product.html" class="nav-link text-sm font-medium text-primary">Products</a>
+          <a href="Charts.html" class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors">Report</a>
+          <a href="Home.html#contact" class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors">Contact</a>
+        </nav>
+        <div class="hidden md:flex items-center gap-3">
+          <a href="login.html" class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white border border-dark-border hover:border-slate-500 rounded-xl transition-all duration-200">
+            Sign In
+          </a>
+          <a href="register.html" class="px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primaryHover rounded-xl transition-all duration-200 glow-btn">
+            Sign Up
+          </a>
+        </div>
+        <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg border border-dark-border hover:border-slate-500 transition-colors">
+          <i data-lucide="menu" class="w-5 h-5 text-slate-300" id="menuIcon"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-dark-border bg-dark-card/95 backdrop-blur-md">
+      <nav class="flex flex-col px-4 py-4 gap-1">
+        <a href="Home.html" class="px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-muted/50 rounded-xl transition-colors">Home</a>
+        <a href="Product.html" class="px-4 py-3 text-sm font-medium text-primary">Products</a>
+        <a href="Charts.html" class="px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-muted/50 rounded-xl transition-colors">Report</a>
+        <a href="Home.html#contact" class="px-4 py-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-muted/50 rounded-xl transition-colors">Contact</a>
+        <div class="flex gap-3 mt-3 pt-3 border-t border-dark-border">
+          <a href="login.html" class="flex-1 px-4 py-2.5 text-sm font-medium text-slate-300 border border-dark-border rounded-xl text-center hover:border-slate-500 transition-colors">Sign In</a>
+          <a href="register.html" class="flex-1 px-4 py-2.5 text-sm font-bold text-white bg-primary hover:bg-primaryHover rounded-xl text-center transition-colors">Sign Up</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+      <div>
+        <h1 class="font-poppins font-bold text-3xl text-white mb-1">All Products</h1>
+        <p class="text-slate-500 text-sm">Browse our full catalog of premium tech products</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <!-- Sort Dropdown -->
+        <div class="relative">
+          <select id="sortSelect" class="appearance-none bg-dark-muted/50 border border-dark-border text-slate-300 text-sm rounded-xl pl-4 pr-10 py-2.5 focus:outline-none focus:border-primary transition-colors cursor-pointer">
+            <option value="default">Sort by: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="newest">Newest First</option>
+            <option value="bestselling">Best Selling</option>
+          </select>
+          <span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          </span>
+        </div>
+        <!-- Grid toggle -->
+        <div class="flex border border-dark-border rounded-xl overflow-hidden">
+          <button id="gridViewBtn" class="p-2.5 bg-primary/20 text-primary transition-colors" title="Grid view">
+            <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          </button>
+          <button id="listViewBtn" class="p-2.5 bg-dark-muted/30 text-slate-500 hover:text-slate-300 transition-colors" title="List view">
+            <i data-lucide="list" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-8">
+
+      <!-- ============ SIDEBAR FILTERS ============ -->
+      <aside id="filterSidebar" class="hidden lg:block w-64 flex-shrink-0">
+        <div class="sticky top-24 space-y-4">
+
+          <!-- Search -->
+          <div class="bg-dark-card border border-dark-border rounded-2xl p-5">
+            <h3 class="font-poppins font-bold text-sm text-white mb-4 flex items-center gap-2">
+              <i data-lucide="search" class="w-4 h-4 text-primary"></i>
+              Search
+            </h3>
+            <div class="relative">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search products..."
+                class="w-full bg-dark-muted/50 border border-dark-border rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/40 transition-all duration-200"
+              >
+              <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+            </div>
+          </div>
+
+          <!-- Categories -->
+          <div class="filter-section bg-dark-card border border-dark-border rounded-2xl">
+            <details open>
+              <summary class="flex items-center justify-between p-5 cursor-pointer select-none">
+                <h3 class="font-poppins font-bold text-sm text-white flex items-center gap-2">
+                  <i data-lucide="tag" class="w-4 h-4 text-primary"></i>
+                  Categories
+                </h3>
+                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 filter-chevron"></i>
+              </summary>
+              <div class="px-5 pb-5 space-y-2" id="categoryFilters">
+                <!-- Filled by JS -->
+              </div>
+            </details>
+          </div>
+
+          <!-- Price Range -->
+          <div class="filter-section bg-dark-card border border-dark-border rounded-2xl">
+            <details open>
+              <summary class="flex items-center justify-between p-5 cursor-pointer select-none">
+                <h3 class="font-poppins font-bold text-sm text-white flex items-center gap-2">
+                  <i data-lucide="wallet" class="w-4 h-4 text-primary"></i>
+                  Price Range
+                </h3>
+                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 filter-chevron"></i>
+              </summary>
+              <div class="px-5 pb-5">
+                <div class="flex gap-2 mb-4">
+                  <div class="flex-1">
+                    <label class="text-xs text-slate-500 mb-1 block">Min ($)</label>
+                    <input type="number" id="priceMin" placeholder="0" min="0" class="w-full bg-dark-muted/50 border border-dark-border rounded-xl py-2 px-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-primary transition-colors">
+                  </div>
+                  <div class="flex-1">
+                    <label class="text-xs text-slate-500 mb-1 block">Max ($)</label>
+                    <input type="number" id="priceMax" placeholder="5000" min="0" class="w-full bg-dark-muted/50 border border-dark-border rounded-xl py-2 px-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-primary transition-colors">
+                  </div>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                  <button class="price-preset px-3 py-1.5 text-xs rounded-lg border border-dark-border text-slate-400 hover:border-primary hover:text-primary transition-colors" data-min="0" data-max="100">Under $100</button>
+                  <button class="price-preset px-3 py-1.5 text-xs rounded-lg border border-dark-border text-slate-400 hover:border-primary hover:text-primary transition-colors" data-min="100" data-max="500">$100-$500</button>
+                  <button class="price-preset px-3 py-1.5 text-xs rounded-lg border border-dark-border text-slate-400 hover:border-primary hover:text-primary transition-colors" data-min="500" data-max="1000">$500-$1K</button>
+                  <button class="price-preset px-3 py-1.5 text-xs rounded-lg border border-dark-border text-slate-400 hover:border-primary hover:text-primary transition-colors" data-min="1000" data-max="9999">$1,000+</button>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Rating -->
+          <div class="filter-section bg-dark-card border border-dark-border rounded-2xl">
+            <details open>
+              <summary class="flex items-center justify-between p-5 cursor-pointer select-none">
+                <h3 class="font-poppins font-bold text-sm text-white flex items-center gap-2">
+                  <i data-lucide="star" class="w-4 h-4 text-primary"></i>
+                  Rating
+                </h3>
+                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 filter-chevron"></i>
+              </summary>
+              <div class="px-5 pb-5 space-y-2" id="ratingFilters">
+                <!-- Filled by JS -->
+              </div>
+            </details>
+          </div>
+
+          <!-- Clear Filters -->
+          <button id="clearFiltersBtn" class="w-full py-2.5 text-sm text-slate-400 hover:text-red-400 border border-dark-border hover:border-red-400/50 rounded-xl transition-colors">
+            <i data-lucide="x" class="w-4 h-4 inline mr-1"></i> Clear All Filters
+          </button>
+        </div>
+      </aside>
+
+      <!-- ============ PRODUCT AREA ============ -->
+      <div class="flex-1 min-w-0">
+
+        <!-- Active Filters Tags -->
+        <div id="activeFilters" class="hidden flex flex-wrap gap-2 mb-4">
+          <!-- Filled by JS -->
+        </div>
+
+        <!-- Mobile Filter Toggle -->
+        <div class="lg:hidden flex gap-2 mb-4 overflow-x-auto pb-2">
+          <button id="mobileFilterBtn" class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-dark-border rounded-xl hover:border-primary transition-colors whitespace-nowrap">
+            <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+            Filters
+          </button>
+          <div class="flex border border-dark-border rounded-xl overflow-hidden">
+            <button id="mobileGridBtn" class="p-2.5 bg-primary/20 text-primary transition-colors">
+              <i data-lucide="layout-grid" class="w-4 h-4"></i>
+            </button>
+            <button id="mobileListBtn" class="p-2.5 bg-dark-muted/30 text-slate-500 hover:text-slate-300 transition-colors">
+              <i data-lucide="list" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Filter Drawer -->
+        <div id="mobileFilterDrawer" class="hidden fixed inset-0 z-50 lg:hidden">
+          <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="filterOverlay"></div>
+          <div class="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-dark-bg border-r border-dark-border overflow-y-auto p-6 space-y-4">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-poppins font-bold text-lg text-white">Filters</h2>
+              <button id="closeFilterBtn" class="p-2 rounded-lg border border-dark-border hover:border-slate-500 transition-colors">
+                <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+              </button>
+            </div>
+
+            <!-- Mobile Search -->
+            <div class="bg-dark-card border border-dark-border rounded-2xl p-4">
+              <h3 class="font-poppins font-bold text-sm text-white mb-3">Search</h3>
+              <div class="relative">
+                <input type="text" id="mobileSearchInput" placeholder="Search products..." class="w-full bg-dark-muted/50 border border-dark-border rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-primary transition-all">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+              </div>
+            </div>
+
+            <!-- Mobile Categories -->
+            <div class="bg-dark-card border border-dark-border rounded-2xl p-4">
+              <h3 class="font-poppins font-bold text-sm text-white mb-3">Categories</h3>
+              <div id="mobileCategoryFilters" class="space-y-2"></div>
+            </div>
+
+            <!-- Mobile Price -->
+            <div class="bg-dark-card border border-dark-border rounded-2xl p-4">
+              <h3 class="font-poppins font-bold text-sm text-white mb-3">Price Range</h3>
+              <div class="flex gap-2 mb-3">
+                <div class="flex-1">
+                  <input type="number" id="mobilePriceMin" placeholder="Min" class="w-full bg-dark-muted/50 border border-dark-border rounded-xl py-2 px-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-primary">
+                </div>
+                <div class="flex-1">
+                  <input type="number" id="mobilePriceMax" placeholder="Max" class="w-full bg-dark-muted/50 border border-dark-border rounded-xl py-2 px-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-primary">
+                </div>
+              </div>
+              <div class="flex gap-2 flex-wrap">
+                <button class="mobile-price-preset px-3 py-1.5 text-xs rounded-lg border border-dark-border text-slate-400 hover:border-primary hover:text-primary transition-colors" data-min="0" data-max="100">Under $100</button>
+                <button class="mobile-price-preset px-3 py-1.5 text-xs rounded-lg border border-dark-border text-slate-400 hover:border-primary hover:text-primary transition-colors" data-min="100" data-max="500">$100-$500</button>
+                <button class="mobile-price-preset px-3 py-1.5 text-xs rounded-lg border border-dark-border text-slate-400 hover:border-primary hover:text-primary transition-colors" data-min="500" data-max="1000">$500-$1K</button>
+                <button class="mobile-price-preset px-3 py-1.5 text-xs rounded-lg border border-dark-border text-slate-400 hover:border-primary hover:text-primary transition-colors" data-min="1000" data-max="9999">$1,000+</button>
+              </div>
+            </div>
+
+            <!-- Mobile Rating -->
+            <div class="bg-dark-card border border-dark-border rounded-2xl p-4">
+              <h3 class="font-poppins font-bold text-sm text-white mb-3">Rating</h3>
+              <div id="mobileRatingFilters" class="space-y-2"></div>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+              <button id="mobileClearFiltersBtn" class="flex-1 py-2.5 text-sm text-red-400 border border-red-400/30 rounded-xl hover:bg-red-400/10 transition-colors">Clear</button>
+              <button id="mobileApplyFiltersBtn" class="flex-1 py-2.5 text-sm font-bold text-white bg-primary hover:bg-primaryHover rounded-xl transition-colors">Apply Filters</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results count -->
+        <div class="flex items-center justify-between mb-5">
+          <p class="text-sm text-slate-500">
+            Showing <span id="resultCount" class="text-white font-medium">0</span> products
+          </p>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Filled by JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-20">
+          <div class="w-20 h-20 rounded-2xl bg-dark-muted/50 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="package-x" class="w-10 h-10 text-slate-600"></i>
+          </div>
+          <h3 class="font-poppins font-bold text-xl text-white mb-2">No products found</h3>
+          <p class="text-slate-500 text-sm mb-6">Try adjusting your filters or search terms.</p>
+          <button id="emptyClearBtn" class="px-6 py-2.5 text-sm font-medium text-primary border border-primary/30 rounded-xl hover:bg-primary/10 transition-colors">
+            Clear all filters
+          </button>
+        </div>
+
+        <!-- ============ PAGINATION ============ -->
+        <div id="pagination" class="mt-10 flex items-center justify-center gap-2">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-dark-border mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+        <div class="col-span-2 md:col-span-1">
+          <a href="Home.html" class="flex items-center gap-3 mb-4">
+            <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
+              <i data-lucide="cpu" class="w-4 h-4 text-white"></i>
+            </div>
+            <span class="font-poppins font-bold text-lg text-white">TechVault</span>
+          </a>
+          <p class="text-xs text-slate-500 leading-relaxed">Your one-stop destination for premium technology products. Quality guaranteed.</p>
+        </div>
+        <div>
+          <h4 class="font-poppins font-bold text-sm text-white mb-4">Quick Links</h4>
+          <ul class="space-y-2.5">
+            <li><a href="Home.html" class="text-xs text-slate-500 hover:text-primary transition-colors">Home</a></li>
+            <li><a href="Product.html" class="text-xs text-slate-500 hover:text-primary transition-colors">Products</a></li>
+            <li><a href="Charts.html" class="text-xs text-slate-500 hover:text-primary transition-colors">Report</a></li>
+            <li><a href="Home.html#contact" class="text-xs text-slate-500 hover:text-primary transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-poppins font-bold text-sm text-white mb-4">Account</h4>
+          <ul class="space-y-2.5">
+            <li><a href="login.html" class="text-xs text-slate-500 hover:text-primary transition-colors">Sign In</a></li>
+            <li><a href="register.html" class="text-xs text-slate-500 hover:text-primary transition-colors">Sign Up</a></li>
+            <li><a href="#" class="text-xs text-slate-500 hover:text-primary transition-colors">My Cart</a></li>
+            <li><a href="#" class="text-xs text-slate-500 hover:text-primary transition-colors">Wishlist</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-poppins font-bold text-sm text-white mb-4">Follow Us</h4>
+          <div class="flex gap-3">
+            <a href="#" class="w-9 h-9 rounded-lg bg-dark-muted/50 border border-dark-border flex items-center justify-center hover:border-slate-500 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor"><path d="M22.46 6c-.85.38-1.78.64-2.75.76 1-.6 1.76-1.55 2.12-2.68-.93.55-1.96.95-3.06 1.17-.88-.94-2.13-1.53-3.51-1.53-2.66 0-4.81 2.16-4.81 4.81 0 .38.04.75.13 1.1-4-.2-7.58-2.11-9.96-5.02-.42.72-.66 1.56-.66 2.46 0 1.68.85 3.16 2.14 4.02-.79-.02-1.53-.24-2.18-.6v.06c0 2.35 1.67 4.31 3.88 4.76-.4.1-.83.16-1.27.16-.31 0-.62-.03-.92-.08.63 1.96 2.45 3.39 4.61 3.43-1.69 1.32-3.83 2.1-6.15 2.1-.4 0-.8-.02-1.19-.07 2.19 1.4 4.78 2.22 7.57 2.22 9.07 0 14.02-7.52 14.02-14.02 0-.21 0-.42-.01-.63.96-.69 1.79-1.56 2.45-2.55z"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-dark-muted/50 border border-dark-border flex items-center justify-center hover:border-slate-500 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-dark-muted/50 border border-dark-border flex items-center justify-center hover:border-slate-500 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-dark-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="text-xs text-slate-600">&copy; 2026 TechVault. All rights reserved.</p>
+        <div class="flex items-center gap-4 text-xs text-slate-600">
+          <a href="#" class="hover:text-slate-400 transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-slate-400 transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ ADD TO CART TOAST ============ -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+    <div class="flex items-center gap-3 bg-dark-card border border-green-500/30 rounded-2xl px-5 py-3 shadow-2xl shadow-black/50">
+      <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+        <i data-lucide="check" class="w-4 h-4 text-green-400"></i>
+      </div>
+      <p class="text-sm text-white font-medium" id="toastMsg">Added to cart!</p>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // ============ MOCK DATA ============
+    const CATEGORIES = ['All', 'Smartphones', 'Laptops', 'Tablets', 'Audio', 'Wearables', 'Accessories'];
+
+    const products = [
+      { id: 1, name: 'iPhone 15 Pro Max 256GB', category: 'Smartphones', price: 1199, originalPrice: 1399, rating: 4.9, reviews: 842, badge: '-15%', badgeColor: 'primary', icon: 'smartphone', sold: 8420, isNew: false },
+      { id: 2, name: 'MacBook Pro M3 14"', category: 'Laptops', price: 1999, originalPrice: null, rating: 4.8, reviews: 324, badge: 'New', badgeColor: 'blue', icon: 'laptop', sold: 3240, isNew: true },
+      { id: 3, name: 'Sony WH-1000XM5', category: 'Audio', price: 348, originalPrice: 399, rating: 4.9, reviews: 1240, badge: 'Hot', badgeColor: 'green', icon: 'headphones', sold: 12400, isNew: false },
+      { id: 4, name: 'Apple Watch Ultra 2', category: 'Wearables', price: 729, originalPrice: 899, rating: 4.7, reviews: 568, badge: '-20%', badgeColor: 'primary', icon: 'watch', sold: 3420, isNew: false },
+      { id: 5, name: 'Samsung Galaxy S24 Ultra', category: 'Smartphones', price: 1299, originalPrice: 1399, rating: 4.8, reviews: 618, badge: '-7%', badgeColor: 'primary', icon: 'smartphone', sold: 6180, isNew: false },
+      { id: 6, name: 'iPad Pro 12.9" M4', category: 'Tablets', price: 1099, originalPrice: 1199, rating: 4.9, reviews: 285, badge: '-8%', badgeColor: 'primary', icon: 'tablet', sold: 2850, isNew: false },
+      { id: 7, name: 'Dell XPS 15 2026', category: 'Laptops', price: 1799, originalPrice: 1899, rating: 4.5, reviews: 192, badge: '-5%', badgeColor: 'primary', icon: 'laptop', sold: 1920, isNew: false },
+      { id: 8, name: 'AirPods Pro 2', category: 'Audio', price: 249, originalPrice: null, rating: 4.8, reviews: 2100, badge: 'New', badgeColor: 'blue', icon: 'headphones', sold: 21000, isNew: true },
+      { id: 9, name: 'Google Pixel 9 Pro', category: 'Smartphones', price: 899, originalPrice: 999, rating: 4.6, reviews: 420, badge: '-10%', badgeColor: 'primary', icon: 'smartphone', sold: 4200, isNew: false },
+      { id: 10, name: 'Galaxy Tab S10 Ultra', category: 'Tablets', price: 999, originalPrice: 1099, rating: 4.7, reviews: 168, badge: '-9%', badgeColor: 'primary', icon: 'tablet', sold: 1680, isNew: false },
+      { id: 11, name: 'Logitech MX Master 3S', category: 'Accessories', price: 99, originalPrice: null, rating: 4.8, reviews: 784, badge: '', badgeColor: '', icon: 'mouse', sold: 7840, isNew: false },
+      { id: 12, name: 'Bose QuietComfort Ultra', category: 'Audio', price: 429, originalPrice: 499, rating: 4.7, reviews: 892, badge: '-14%', badgeColor: 'primary', icon: 'headphones', sold: 5680, isNew: false },
+      { id: 13, name: 'Samsung Galaxy Watch 7', category: 'Wearables', price: 299, originalPrice: 349, rating: 4.6, reviews: 340, badge: '-14%', badgeColor: 'primary', icon: 'watch', sold: 3400, isNew: false },
+      { id: 14, name: 'iPhone 16 Pro 128GB', category: 'Smartphones', price: 999, originalPrice: null, rating: 4.9, reviews: 156, badge: 'New', badgeColor: 'blue', icon: 'smartphone', sold: 1560, isNew: true },
+      { id: 15, name: 'ThinkPad X1 Carbon Gen 12', category: 'Laptops', price: 1649, originalPrice: 1799, rating: 4.7, reviews: 248, badge: '-8%', badgeColor: 'primary', icon: 'laptop', sold: 2480, isNew: false },
+      { id: 16, name: 'Anker PowerCore 20000', category: 'Accessories', price: 49, originalPrice: 59, rating: 4.5, reviews: 3420, badge: '-17%', badgeColor: 'primary', icon: 'battery-charging', sold: 34200, isNew: false },
+      { id: 17, name: 'Samsung Galaxy Buds3 Pro', category: 'Audio', price: 179, originalPrice: 199, rating: 4.6, reviews: 680, badge: '-10%', badgeColor: 'primary', icon: 'headphones', sold: 6800, isNew: false },
+      { id: 18, name: 'Apple Pencil Pro', category: 'Accessories', price: 129, originalPrice: null, rating: 4.8, reviews: 520, badge: 'New', badgeColor: 'blue', icon: 'pencil', sold: 5200, isNew: true },
+      { id: 19, name: 'iPad Air M3 11"', category: 'Tablets', price: 599, originalPrice: 649, rating: 4.7, reviews: 390, badge: '-8%', badgeColor: 'primary', icon: 'tablet', sold: 3900, isNew: false },
+      { id: 20, name: 'Garmin Fenix 8', category: 'Wearables', price: 799, originalPrice: 899, rating: 4.8, reviews: 210, badge: '-11%', badgeColor: 'primary', icon: 'watch', sold: 2100, isNew: false },
+      { id: 21, name: 'Keychron Q1 Pro', category: 'Accessories', price: 169, originalPrice: 199, rating: 4.7, reviews: 820, badge: '-15%', badgeColor: 'primary', icon: 'keyboard', sold: 4100, isNew: false },
+      { id: 22, name: 'Xiaomi 14 Ultra', category: 'Smartphones', price: 849, originalPrice: 949, rating: 4.6, reviews: 310, badge: '-11%', badgeColor: 'primary', icon: 'smartphone', sold: 3100, isNew: false },
+      { id: 23, name: 'MacBook Air M4 15"', category: 'Laptops', price: 1299, originalPrice: null, rating: 4.9, reviews: 88, badge: 'New', badgeColor: 'blue', icon: 'laptop', sold: 880, isNew: true },
+      { id: 24, name: 'Belkin BoostCharge 3-in-1', category: 'Accessories', price: 79, originalPrice: 99, rating: 4.5, reviews: 1240, badge: '-20%', badgeColor: 'primary', icon: 'cable', sold: 12400, isNew: false },
+    ];
+
+    // ============ STATE ============
+    let currentFilters = {
+      search: '',
+      category: 'All',
+      minPrice: 0,
+      maxPrice: Infinity,
+      minRating: 0,
+      sort: 'default',
+      page: 1,
+    };
+    const PER_PAGE = 9;
+    let isGridView = true;
+
+    // ============ RENDER FILTER OPTIONS ============
+    function renderCategoryFilters() {
+      const container = document.getElementById('categoryFilters');
+      const mobileContainer = document.getElementById('mobileCategoryFilters');
+      const html = CATEGORIES.map(cat => `
+        <label class="flex items-center gap-2.5 cursor-pointer group">
+          <input type="radio" name="category" value="${cat}" class="filter-radio sr-only" ${currentFilters.category === cat ? 'checked' : ''}>
+          <div class="w-5 h-5 rounded-md border border-dark-border bg-dark-muted/50 transition-all duration-200 flex items-center justify-center flex-shrink-0">
+            <div class="check-icon hidden items-center justify-center">
+              <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+          <span class="text-sm text-slate-400 group-hover:text-slate-200 transition-colors">${cat}</span>
+        </label>
+      `).join('');
+      container.innerHTML = html;
+      mobileContainer.innerHTML = html;
+
+      // Sync radio selection
+      document.querySelectorAll('input[name="category"]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          currentFilters.category = e.target.value;
+          currentFilters.page = 1;
+          syncCategoryRadios();
+          render();
+        });
+      });
+    }
+
+    function syncCategoryRadios() {
+      document.querySelectorAll('input[name="category"]').forEach(input => {
+        input.checked = input.value === currentFilters.category;
+      });
+    }
+
+    function renderRatingFilters() {
+      const container = document.getElementById('ratingFilters');
+      const mobileContainer = document.getElementById('mobileRatingFilters');
+      const ratings = [4, 3, 2];
+      const html = ratings.map(r => `
+        <label class="flex items-center gap-2.5 cursor-pointer group">
+          <input type="radio" name="rating" value="${r}" class="filter-radio sr-only" ${currentFilters.minRating === r ? 'checked' : ''}>
+          <div class="w-5 h-5 rounded-md border border-dark-border bg-dark-muted/50 transition-all duration-200 flex items-center justify-center flex-shrink-0">
+            <div class="check-icon hidden items-center justify-center">
+              <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+          <span class="text-sm text-slate-400 group-hover:text-slate-200 transition-colors flex items-center gap-1">
+            ${Array.from({length: r}, () => '<svg class="w-3.5 h-3.5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>').join('')}
+            <span>& Up</span>
+          </span>
+        </label>
+      `).join('');
+      container.innerHTML = html;
+      mobileContainer.innerHTML = html;
+
+      document.querySelectorAll('input[name="rating"]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          currentFilters.minRating = parseInt(e.target.value);
+          currentFilters.page = 1;
+          syncRatingRadios();
+          render();
+        });
+      });
+    }
+
+    function syncRatingRadios() {
+      document.querySelectorAll('input[name="rating"]').forEach(input => {
+        input.checked = parseInt(input.value) === currentFilters.minRating;
+      });
+    }
+
+    // ============ FILTER & SORT ============
+    function getFiltered() {
+      let result = products.filter(p => {
+        if (currentFilters.search && !p.name.toLowerCase().includes(currentFilters.search.toLowerCase())) return false;
+        if (currentFilters.category !== 'All' && p.category !== currentFilters.category) return false;
+        if (p.price < currentFilters.minPrice) return false;
+        if (currentFilters.maxPrice !== Infinity && p.price > currentFilters.maxPrice) return false;
+        if (p.rating < currentFilters.minRating) return false;
+        return true;
+      });
+
+        switch (currentFilters.sort) {
+          case 'price-asc': result.sort((a, b) => a.price - b.price); break;
+          case 'price-desc': result.sort((a, b) => b.price - a.price); break;
+          case 'newest': result.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0)); break;
+          case 'bestselling': result.sort((a, b) => b.sold - a.sold); break;
+        }
+      return result;
+    }
+
+    function getPaginated(filtered) {
+      const start = (currentFilters.page - 1) * PER_PAGE;
+      return filtered.slice(start, start + PER_PAGE);
+    }
+
+    function getTotalPages(filtered) {
+      return Math.ceil(filtered.length / PER_PAGE);
+    }
+
+    // ============ RENDER STARS ============
+    function renderStars(rating) {
+      const full = Math.floor(rating);
+      const half = rating % 1 >= 0.5;
+      const empty = 5 - full - (half ? 1 : 0);
+      return (
+        Array(full).fill('<svg class="w-3.5 h-3.5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>').join('') +
+        (half ? '<svg class="w-3.5 h-3.5 text-yellow-400 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' : '') +
+        Array(empty).fill('<svg class="w-3.5 h-3.5 text-slate-600 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>').join('')
+      );
+    }
+
+    // ============ RENDER PRODUCTS ============
+    function renderProducts(items) {
+      const grid = document.getElementById('productGrid');
+      const empty = document.getElementById('emptyState');
+
+      if (items.length === 0) {
+        grid.classList.add('hidden');
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      grid.classList.remove('hidden');
+      empty.classList.add('hidden');
+
+      const viewClass = isGridView ? 'sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1';
+
+      grid.className = `grid flex-1 min-w-0 ${viewClass} gap-5`;
+      if (isGridView) {
+        grid.innerHTML = items.map(p => `
+          <div class="product-card bg-dark-card border border-dark-border rounded-2xl p-5 transition-all duration-200 hover:shadow-lg hover:shadow-black/30 cursor-pointer group ${isGridView ? '' : 'flex items-center gap-4'}">
+            <div class="${isGridView ? 'relative mb-4' : 'relative w-28 h-28 flex-shrink-0'}">
+              <div class="${isGridView ? 'w-full aspect-square' : 'w-full h-full'} bg-dark-muted/40 rounded-xl flex items-center justify-center overflow-hidden">
+                <i data-lucide="${p.icon}" class="product-img-wrap ${isGridView ? 'w-16 h-16' : 'w-10 h-10'} text-slate-600 transition-transform duration-300"></i>
+              </div>
+              ${p.badge ? `<span class="absolute top-2 left-2 text-xs font-semibold text-white px-2 py-0.5 rounded-lg ${p.badgeColor === 'blue' ? 'bg-blue-500' : p.badgeColor === 'green' ? 'bg-green-500' : 'bg-primary'}">${p.badge}</span>` : ''}
+              <button class="absolute ${isGridView ? 'top-2 right-2' : 'top-1 right-1'} w-8 h-8 rounded-lg bg-dark-card/80 backdrop-blur-sm border border-dark-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:border-primary/50">
+                <i data-lucide="heart" class="w-4 h-4 text-slate-400 hover:text-primary transition-colors"></i>
+              </button>
+            </div>
+            <div class="${isGridView ? '' : 'flex-1 min-w-0'}">
+              <div class="flex items-center gap-1 mb-2">
+                ${renderStars(p.rating)}
+                <span class="text-xs text-slate-500 ml-1">(${p.reviews.toLocaleString()})</span>
+              </div>
+              <h3 class="font-poppins font-bold text-sm text-white mb-1 leading-tight ${isGridView ? '' : 'text-base'}">${p.name}</h3>
+              <p class="text-xs text-slate-500 mb-3">${p.category}</p>
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-baseline gap-2">
+                  <span class="font-poppins font-bold text-lg text-primary">$${p.price.toLocaleString()}</span>
+                  ${p.originalPrice ? `<span class="text-xs text-slate-500 line-through">$${p.originalPrice.toLocaleString()}</span>` : ''}
+                </div>
+                <div class="flex gap-2">
+                  <button class="detail-btn p-2 rounded-xl border border-dark-border hover:border-primary/50 hover:bg-primary/10 text-slate-400 hover:text-primary transition-all duration-200" data-id="${p.id}" title="View details">
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                  </button>
+                  <button class="add-cart-btn p-2 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all duration-200" data-id="${p.id}" title="Add to cart">
+                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        grid.innerHTML = items.map(p => `
+          <div class="product-card bg-dark-card border border-dark-border rounded-2xl p-5 transition-all duration-200 hover:shadow-lg hover:shadow-black/30 cursor-pointer group flex items-center gap-5">
+            <div class="relative w-28 h-28 flex-shrink-0">
+              <div class="w-full h-full bg-dark-muted/40 rounded-xl flex items-center justify-center overflow-hidden">
+                <i data-lucide="${p.icon}" class="product-img-wrap w-10 h-10 text-slate-600 transition-transform duration-300"></i>
+              </div>
+              ${p.badge ? `<span class="absolute top-1 left-1 text-xs font-semibold text-white px-2 py-0.5 rounded-lg ${p.badgeColor === 'blue' ? 'bg-blue-500' : p.badgeColor === 'green' ? 'bg-green-500' : 'bg-primary'}">${p.badge}</span>` : ''}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1 mb-1">
+                ${renderStars(p.rating)}
+                <span class="text-xs text-slate-500 ml-1">(${p.reviews.toLocaleString()})</span>
+              </div>
+              <h3 class="font-poppins font-bold text-sm text-white mb-1">${p.name}</h3>
+              <p class="text-xs text-slate-500 mb-3">${p.category}</p>
+              <div class="flex items-baseline gap-2">
+                <span class="font-poppins font-bold text-lg text-primary">$${p.price.toLocaleString()}</span>
+                ${p.originalPrice ? `<span class="text-xs text-slate-500 line-through">$${p.originalPrice.toLocaleString()}</span>` : ''}
+              </div>
+            </div>
+            <div class="flex gap-2 flex-shrink-0">
+              <button class="detail-btn px-4 py-2 rounded-xl border border-dark-border hover:border-primary/50 hover:bg-primary/10 text-slate-400 hover:text-primary text-sm transition-all duration-200 flex items-center gap-1.5" data-id="${p.id}">
+                <i data-lucide="eye" class="w-4 h-4"></i>
+                Details
+              </button>
+              <button class="add-cart-btn px-4 py-2 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-white text-sm transition-all duration-200 flex items-center gap-1.5" data-id="${p.id}">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      lucide.createIcons();
+      attachProductHandlers();
+    }
+
+    function attachProductHandlers() {
+      document.querySelectorAll('.add-cart-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = parseInt(btn.dataset.id);
+          const product = products.find(p => p.id === id);
+          showToast(`"${product.name}" added to cart!`);
+        });
+      });
+      document.querySelectorAll('.detail-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = parseInt(btn.dataset.id);
+          const product = products.find(p => p.id === id);
+          showToast(`Viewing details for "${product.name}"`);
+        });
+      });
+    }
+
+    // ============ RENDER PAGINATION ============
+    function renderPagination(totalPages) {
+      const container = document.getElementById('pagination');
+      if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+
+      const cur = currentFilters.page;
+      let pages = [];
+
+      if (totalPages <= 7) {
+        pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+      } else {
+        if (cur <= 4) {
+          pages = [1, 2, 3, 4, 5, '...', totalPages];
+        } else if (cur >= totalPages - 3) {
+          pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+        } else {
+          pages = [1, '...', cur - 1, cur, cur + 1, '...', totalPages];
+        }
+      }
+
+      container.innerHTML = `
+        <button class="pagination-btn px-3.5 py-2 text-sm rounded-xl border border-dark-border text-slate-400 hover:border-primary hover:text-primary transition-all duration-200 flex items-center gap-1 ${cur === 1 ? 'opacity-30 pointer-events-none' : ''}" id="prevBtn">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          Prev
+        </button>
+        ${pages.map(p => p === '...' ?
+          '<span class="px-2 text-slate-600">...</span>' :
+          `<button class="pagination-btn px-3.5 py-2 text-sm rounded-xl border transition-all duration-200 ${p === cur ? 'active' : 'border-dark-border text-slate-400 hover:border-primary hover:text-primary'}" data-page="${p}">${p}</button>`
+        ).join('')}
+        <button class="pagination-btn px-3.5 py-2 text-sm rounded-xl border border-dark-border text-slate-400 hover:border-primary hover:text-primary transition-all duration-200 flex items-center gap-1 ${cur === totalPages ? 'opacity-30 pointer-events-none' : ''}" id="nextBtn">
+          Next
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      `;
+
+      lucide.createIcons();
+
+      document.getElementById('prevBtn')?.addEventListener('click', () => {
+        if (currentFilters.page > 1) { currentFilters.page--; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      });
+      document.getElementById('nextBtn')?.addEventListener('click', () => {
+        if (currentFilters.page < totalPages) { currentFilters.page++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      });
+      container.querySelectorAll('[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentFilters.page = parseInt(btn.dataset.page);
+          render();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+    }
+
+    // ============ RENDER ACTIVE FILTERS ============
+    function renderActiveFilters() {
+      const container = document.getElementById('activeFilters');
+      const tags = [];
+
+      if (currentFilters.search) tags.push({ label: `"${currentFilters.search}"`, clear: () => { currentFilters.search = ''; document.getElementById('searchInput').value = ''; document.getElementById('mobileSearchInput').value = ''; }});
+      if (currentFilters.category !== 'All') tags.push({ label: currentFilters.category, clear: () => { currentFilters.category = 'All'; }});
+      if (currentFilters.minPrice > 0 || currentFilters.maxPrice !== Infinity) tags.push({ label: `$${currentFilters.minPrice} - $${currentFilters.maxPrice === Infinity ? '∞' : currentFilters.maxPrice}`, clear: () => { currentFilters.minPrice = 0; currentFilters.maxPrice = Infinity; }});
+      if (currentFilters.minRating > 0) tags.push({ label: `${currentFilters.minRating}+ stars`, clear: () => { currentFilters.minRating = 0; }});
+
+      if (tags.length === 0) {
+        container.classList.add('hidden');
+        return;
+      }
+
+      container.classList.remove('hidden');
+      container.innerHTML = tags.map((tag, i) => `
+        <button class="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 transition-colors" data-tag="${i}">
+          ${tag.label}
+          <i data-lucide="x" class="w-3 h-3"></i>
+        </button>
+      `).join('');
+
+      lucide.createIcons();
+      container.querySelectorAll('[data-tag]').forEach((btn, i) => {
+        btn.addEventListener('click', () => { tags[i].clear(); syncCategoryRadios(); syncRatingRadios(); render(); });
+      });
+    }
+
+    // ============ RENDER ============
+    function render() {
+      const filtered = getFiltered();
+      const totalPages = getTotalPages(filtered);
+      const items = getPaginated(filtered);
+
+      if (currentFilters.page > totalPages && totalPages > 0) currentFilters.page = totalPages;
+
+      document.getElementById('resultCount').textContent = filtered.length;
+      syncPricePresets();
+      renderProducts(items);
+      renderPagination(totalPages);
+      renderActiveFilters();
+    }
+
+    // ============ SEARCH ============
+    let searchTimeout;
+    function handleSearch(value) {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        currentFilters.search = value;
+        currentFilters.page = 1;
+        render();
+      }, 300);
+    }
+
+    document.getElementById('searchInput').addEventListener('input', e => handleSearch(e.target.value));
+    document.getElementById('mobileSearchInput').addEventListener('input', e => {
+      document.getElementById('searchInput').value = e.target.value;
+      handleSearch(e.target.value);
+    });
+
+    // ============ PRICE FILTERS ============
+    function syncPricePresets() {
+      document.querySelectorAll('.price-preset').forEach(btn => {
+        const min = parseFloat(btn.dataset.min);
+        const max = parseFloat(btn.dataset.max);
+        const isActive = currentFilters.minPrice === min && currentFilters.maxPrice === max;
+        btn.classList.toggle('active', isActive);
+      });
+      document.querySelectorAll('.mobile-price-preset').forEach(btn => {
+        const min = parseFloat(btn.dataset.min);
+        const max = parseFloat(btn.dataset.max);
+        const isActive = currentFilters.minPrice === min && currentFilters.maxPrice === max;
+        btn.classList.toggle('active', isActive);
+      });
+    }
+
+    function applyPrice() {
+      const min = parseFloat(document.getElementById('priceMin').value) || 0;
+      const max = parseFloat(document.getElementById('priceMax').value) || Infinity;
+      currentFilters.minPrice = min;
+      currentFilters.maxPrice = max;
+      currentFilters.page = 1;
+      syncPricePresets();
+      render();
+    }
+
+    document.getElementById('priceMin').addEventListener('input', applyPrice);
+    document.getElementById('priceMax').addEventListener('input', applyPrice);
+
+    document.querySelectorAll('.price-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentFilters.minPrice = parseFloat(btn.dataset.min);
+        currentFilters.maxPrice = parseFloat(btn.dataset.max);
+        currentFilters.page = 1;
+        document.getElementById('priceMin').value = currentFilters.minPrice;
+        document.getElementById('priceMax').value = currentFilters.maxPrice === 9999 ? '' : currentFilters.maxPrice;
+        syncPricePresets();
+        render();
+      });
+    });
+
+    // Mobile price
+    document.getElementById('mobilePriceMin').addEventListener('input', e => document.getElementById('priceMin').value = e.target.value);
+    document.getElementById('mobilePriceMax').addEventListener('input', e => document.getElementById('priceMax').value = e.target.value);
+    document.querySelectorAll('.mobile-price-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('priceMin').value = btn.dataset.min;
+        document.getElementById('priceMax').value = btn.dataset.max === '9999' ? '' : btn.dataset.max;
+        document.getElementById('mobilePriceMin').value = btn.dataset.min;
+        document.getElementById('mobilePriceMax').value = btn.dataset.max === '9999' ? '' : btn.dataset.max;
+        currentFilters.minPrice = parseFloat(btn.dataset.min);
+        currentFilters.maxPrice = parseFloat(btn.dataset.max);
+        currentFilters.page = 1;
+        syncPricePresets();
+        render();
+      });
+    });
+
+    // ============ SORT ============
+    document.getElementById('sortSelect').addEventListener('change', e => {
+      currentFilters.sort = e.target.value;
+      currentFilters.page = 1;
+      render();
+    });
+
+    // ============ GRID / LIST VIEW ============
+    function setGridView(grid) {
+      isGridView = grid;
+      const buttons = [
+        ['gridViewBtn', 'mobileGridBtn'],
+        ['listViewBtn', 'mobileListBtn'],
+      ];
+      const activeBtns = grid ? [0, 1] : [1, 0];
+      activeBtns.forEach(idx => {
+        const [deskId, mobId] = buttons[idx];
+        const desk = document.getElementById(deskId);
+        const mob = document.getElementById(mobId);
+        if (desk) {
+          desk.classList.remove('bg-dark-muted/30', 'text-slate-500');
+          desk.classList.add('bg-primary/20', 'text-primary');
+        }
+        if (mob) {
+          mob.classList.remove('bg-dark-muted/30', 'text-slate-500');
+          mob.classList.add('bg-primary/20', 'text-primary');
+        }
+      });
+      [buttons[activeBtns[0] === 0 ? 1 : 0][0], buttons[activeBtns[0] === 0 ? 1 : 0][1]].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('bg-dark-muted/30', 'text-slate-500');
+          el.classList.remove('bg-primary/20', 'text-primary');
+        }
+      });
+      render();
+    }
+
+    document.getElementById('gridViewBtn').addEventListener('click', () => setGridView(true));
+    document.getElementById('listViewBtn').addEventListener('click', () => setGridView(false));
+    document.getElementById('mobileGridBtn').addEventListener('click', () => setGridView(true));
+    document.getElementById('mobileListBtn').addEventListener('click', () => setGridView(false));
+
+    // ============ CLEAR FILTERS ============
+    function clearAllFilters() {
+      currentFilters = { search: '', category: 'All', minPrice: 0, maxPrice: Infinity, minRating: 0, sort: 'default', page: 1 };
+      document.getElementById('searchInput').value = '';
+      document.getElementById('mobileSearchInput').value = '';
+      document.getElementById('priceMin').value = '';
+      document.getElementById('priceMax').value = '';
+      document.getElementById('mobilePriceMin').value = '';
+      document.getElementById('mobilePriceMax').value = '';
+      document.getElementById('sortSelect').value = 'default';
+      syncCategoryRadios();
+      syncRatingRadios();
+      syncPricePresets();
+      render();
+    }
+
+    document.getElementById('clearFiltersBtn').addEventListener('click', clearAllFilters);
+    document.getElementById('mobileClearFiltersBtn').addEventListener('click', clearAllFilters);
+    document.getElementById('emptyClearBtn').addEventListener('click', clearAllFilters);
+
+    // ============ MOBILE FILTER DRAWER ============
+    document.getElementById('mobileFilterBtn').addEventListener('click', () => {
+      document.getElementById('mobileFilterDrawer').classList.remove('hidden');
+    });
+    document.getElementById('closeFilterBtn').addEventListener('click', () => {
+      document.getElementById('mobileFilterDrawer').classList.add('hidden');
+    });
+    document.getElementById('filterOverlay').addEventListener('click', () => {
+      document.getElementById('mobileFilterDrawer').classList.add('hidden');
+    });
+    document.getElementById('mobileApplyFiltersBtn').addEventListener('click', () => {
+      const mobileMin = parseFloat(document.getElementById('mobilePriceMin').value) || 0;
+      const mobileMax = parseFloat(document.getElementById('mobilePriceMax').value) || Infinity;
+      currentFilters.minPrice = mobileMin;
+      currentFilters.maxPrice = mobileMax;
+      currentFilters.page = 1;
+      document.getElementById('priceMin').value = document.getElementById('mobilePriceMin').value;
+      document.getElementById('priceMax').value = document.getElementById('mobilePriceMax').value;
+      syncPricePresets();
+      render();
+      document.getElementById('mobileFilterDrawer').classList.add('hidden');
+    });
+
+    // ============ MOBILE MENU ============
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuIcon = document.getElementById('menuIcon');
+    mobileMenuBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      menuIcon.setAttribute('data-lucide', isOpen ? 'menu' : 'x');
+      lucide.createIcons();
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        menuIcon.setAttribute('data-lucide', 'menu');
+        lucide.createIcons();
+      });
+    });
+
+    // ============ TOAST ============
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 2500);
+    }
+
+    // ============ INIT ============
+    // Support URL params (e.g. Product.html?category=Smartphones)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('category')) {
+      const cat = urlParams.get('category');
+      if (CATEGORIES.includes(cat)) {
+        currentFilters.category = cat;
+      }
+    }
+
+    renderCategoryFilters();
+    renderRatingFilters();
+    render();
+  </script>
+</body>
+</html>
